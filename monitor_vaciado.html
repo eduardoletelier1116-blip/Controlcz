@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Vaciado</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+        :root {
+            --bg-app: #f4f7f9;
+            --card-bg: #ffffff;
+            --primary: #003366;
+            --primary-2: #00509e;
+            --primary-soft: #e8f0f7;
+            --accent-soft: #0ea5e9;
+            --text-main: #2d3436;
+            --text-muted: #8e9aaf;
+            --border-soft: #d9e4ef;
+            --green-soft: #198754;
+            --red-soft: #dc3545;
+            --orange-soft: #f59e0b;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            background-color: var(--bg-app); 
+            color: var(--text-main); 
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px;
+        }
+
+        .container-fluid {
+            max-width: 1320px;
+            margin: 0 auto;
+        }
+
+        .app-header {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 12px;
+            align-items: center;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(217, 228, 239, 0.9);
+        }
+
+        .logo-section { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            min-width: 0;
+        }
+
+        .logo-img { 
+            height: 34px; 
+            width: auto; 
+        }
+
+        .app-title { 
+            font-size: 1.12rem; 
+            font-weight: 800; 
+            margin: 0; 
+            white-space: nowrap;
+            color: var(--primary);
+            letter-spacing: 0.3px;
+        }
+
+        .date-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-soft);
+            padding: 6px 8px;
+            border-radius: 50px;
+            border: 1px solid var(--border-soft);
+        }
+
+        .date-control label {
+            font-size: 0.68rem;
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .date-field {
+            position: relative;
+            min-width: 158px;
+        }
+
+        .date-field input {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-soft);
+            border-radius: 50px;
+            padding: 5px 38px 5px 11px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            outline: none;
+            width: 100%;
+            height: 32px;
+            color-scheme: light;
+            box-sizing: border-box;
+            transition: 0.2s ease;
+        }
+
+        .date-field input:focus {
+            border-color: var(--primary-2);
+            box-shadow: 0 0 0 3px rgba(0, 80, 158, 0.12);
+        }
+
+        .date-field input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1rem;
+            pointer-events: none;
+            opacity: 0.95;
+        }
+
+        .btn-hoy {
+            border: none;
+            background: var(--primary);
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .btn-hoy:hover {
+            background: var(--primary-2);
+            transform: translateY(-1px);
+        }
+
+        .sync-info {
+            font-size: 0.68rem;
+            color: var(--primary);
+            background: var(--primary-soft);
+            border: 1px solid var(--border-soft);
+            padding: 7px 12px;
+            border-radius: 50px;
+            text-align: right;
+            min-width: 135px;
+            font-weight: 800;
+        }
+
+        .day-summary {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            flex-wrap: wrap;
+        }
+
+        .summary-pill {
+            background: #ffffff;
+            border: 1px solid var(--border-soft);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 50px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+        }
+
+        .data-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            height: 25vh;
+            min-height: 220px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(217, 228, 239, 0.9);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .indicator-label {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            font-size: 0.66rem;
+            font-weight: 800;
+            padding: 4px 11px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-normal { 
+            background: #e9f7ef; 
+            color: var(--green-soft); 
+            border: 1px solid #bfe4ce; 
+        }
+
+        .status-fuera { 
+            background: #fff0f0; 
+            color: var(--red-soft); 
+            border: 1px solid #f0c6c0; 
+        }
+
+        .status-sin-datos {
+            background: #f1f3f6;
+            color: var(--text-muted);
+            border: 1px solid #d9e4ef;
+        }
+
+        .status-horno {
+            background: #fff7e6;
+            color: var(--orange-soft);
+            border: 1px solid #ffe0a3;
+        }
+
+        .empty-chart {
+            height: 85%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-align: center;
+            background: #f8fafc;
+            border-radius: 18px;
+            border: 1px dashed #d9e4ef;
+        }
+
+        .modal-content { 
+            background: #ffffff; 
+            border-radius: 25px; 
+            border: none; 
+            color: var(--text-main); 
+            box-shadow: var(--shadow);
+        }
+
+        .modal-title {
+            color: var(--primary);
+        }
+
+        .btn-close {
+            filter: none;
+        }
+
+        #infoRegistro {
+            background: var(--primary-soft) !important;
+            color: var(--primary) !important;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .app-header {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                border-radius: 22px;
+            }
+
+            .date-control {
+                justify-content: space-between;
+                border-radius: 16px;
+                padding: 8px;
+            }
+
+            .date-field {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .sync-info {
+                text-align: center;
+                width: 100%;
+            }
+
+            .app-title {
+                font-size: 1rem;
+            }
+
+            .data-card {
+                height: 260px;
+                border-radius: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+
+    <header class="app-header">
+        <div class="logo-section">
+            <img src="logo-icono.png" alt="Logo" class="logo-img" onerror="this.style.visibility='hidden'">
+            <h1 class="app-title">Monitor de Vaciado</h1>
+        </div>
+
+        <div class="date-control">
+            <label for="fechaConsulta">Día</label>
+
+            <div class="date-field">
+                <input type="date" id="fechaConsulta" onchange="refresh()">
+                <i class="bi bi-calendar3 calendar-icon"></i>
+            </div>
+
+            <button class="btn-hoy" onclick="volverAHoy()">Hoy</button>
+        </div>
+
+        <div class="sync-info">
+            <span id="syncTime">Sincronizando...</span>
+        </div>
+    </header>
+
+    <div class="day-summary">
+        <span class="summary-pill" id="fechaMostrada">--/--/----</span>
+        <span class="summary-pill" id="totalRegistros">0 registros</span>
+        <span class="summary-pill" id="rangoHorario">Sin horario</span>
+    </div>
+
+    <div class="data-card">
+        <div class="card-header">
+            <span class="indicator-label">PPM (30-100)</span>
+            <div id="status_ppm"></div>
+        </div>
+        <div id="chart_ppm" style="height: 85%; width: 100%;"></div>
+    </div>
+
+    <div class="data-card">
+        <div class="card-header">
+            <span class="indicator-label">ORP (750-850)</span>
+            <div id="status_orp"></div>
+        </div>
+        <div id="chart_orp" style="height: 85%; width: 100%;"></div>
+    </div>
+
+    <div class="data-card">
+        <div class="card-header">
+            <span class="indicator-label">PH (6.5-7.5)</span>
+            <div id="status_ph"></div>
+        </div>
+        <div id="chart_ph" style="height: 85%; width: 100%;"></div>
+    </div>
+
+    <div class="data-card">
+        <div class="card-header">
+            <span class="indicator-label">Temperatura Horno</span>
+            <div id="status_horno"></div>
+        </div>
+        <div id="chart_horno" style="height: 85%; width: 100%;"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="fotoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h6 class="modal-title fw-bold">Registro Detallado</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center p-4">
+                <img id="imgRegistro" src="" class="img-fluid rounded-4 mb-3 shadow">
+                <div id="infoRegistro" class="p-3 rounded-4 small"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxnVLO6fLBvmtiWCcE6ZZFBy1H3TSxSJA4sxq3HVc3CpZjVnpVcNyJION_U5XPCJhqlJQ/exec?pestana=Vaciado";
+
+    const LIMITS = { 
+        ppm: [30, 100], 
+        orp: [750, 850], 
+        ph: [6.5, 7.5] 
+    };
+
+    let charts = {};
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(inicializar);
+    setInterval(refresh, 30000);
+
+    function inicializar() {
+        document.getElementById("fechaConsulta").value = obtenerFechaHoyISO();
+        refresh();
+    }
+
+    function obtenerFechaHoyISO() {
+        const hoy = new Date();
+        const y = hoy.getFullYear();
+        const m = String(hoy.getMonth() + 1).padStart(2, '0');
+        const d = String(hoy.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function volverAHoy() {
+        document.getElementById("fechaConsulta").value = obtenerFechaHoyISO();
+        refresh();
+    }
+
+    function formatearFechaCL(fechaISO) {
+        if (!fechaISO || !fechaISO.includes("-")) return "--/--/----";
+
+        const p = fechaISO.split("-");
+        return `${p[2]}/${p[1]}/${p[0]}`;
+    }
+
+    function formatearFechaChileDesdeDate(date) {
+        const partes = new Intl.DateTimeFormat("es-CL", {
+            timeZone: "America/Santiago",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }).formatToParts(date);
+
+        const obj = {};
+        partes.forEach(p => {
+            obj[p.type] = p.value;
+        });
+
+        return `${obj.year}-${obj.month}-${obj.day}`;
+    }
+
+    function formatearHoraChileDesdeDate(date) {
+        const partes = new Intl.DateTimeFormat("es-CL", {
+            timeZone: "America/Santiago",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+            hourCycle: "h23"
+        }).formatToParts(date);
+
+        const obj = {};
+        partes.forEach(p => {
+            obj[p.type] = p.value;
+        });
+
+        return `${obj.hour}:${obj.minute}`;
+    }
+
+    function normalizarFechaISO(valor) {
+        if (!valor) return "";
+
+        const str = String(valor).trim();
+
+        if (/^\d{4}-\d{2}-\d{2}T/.test(str)) {
+            const date = new Date(str);
+
+            if (!isNaN(date.getTime())) {
+                return formatearFechaChileDesdeDate(date);
+            }
+        }
+
+        if (str.includes("/")) {
+            const fechaParte = str.split(" ")[0];
+            const p = fechaParte.split("/");
+
+            if (p.length === 3) {
+                return `${p[2]}-${p[1].padStart(2, "0")}-${p[0].padStart(2, "0")}`;
+            }
+        }
+
+        if (str.includes("-")) {
+            return str.split("T")[0].split(" ")[0];
+        }
+
+        const date = new Date(str);
+        if (!isNaN(date.getTime())) {
+            return formatearFechaChileDesdeDate(date);
+        }
+
+        return "";
+    }
+
+    function extraerHora(valor) {
+        if (!valor) return "--:--";
+
+        const str = String(valor).trim();
+
+        if (/^\d{4}-\d{2}-\d{2}T/.test(str)) {
+            const date = new Date(str);
+
+            if (!isNaN(date.getTime())) {
+                return formatearHoraChileDesdeDate(date);
+            }
+        }
+
+        const matchFechaChile = str.match(/\d{1,2}\/\d{1,2}\/\d{4}\s+(\d{1,2}:\d{2})/);
+
+        if (matchFechaChile) {
+            return matchFechaChile[1].padStart(5, "0");
+        }
+
+        const matchHora = str.match(/^(\d{1,2}:\d{2})/);
+
+        if (matchHora) {
+            return matchHora[1].padStart(5, "0");
+        }
+
+        const date = new Date(str);
+
+        if (!isNaN(date.getTime())) {
+            return formatearHoraChileDesdeDate(date);
+        }
+
+        return "--:--";
+    }
+
+    function horaASegundos(valor) {
+        const h = extraerHora(valor);
+        const partes = h.split(":").map(n => parseInt(n, 10));
+
+        if (partes.length < 2 || isNaN(partes[0]) || isNaN(partes[1])) return 0;
+
+        return partes[0] * 3600 + partes[1] * 60;
+    }
+
+    function normalizarNumero(valor) {
+        if (valor === null || valor === undefined || valor === "") return NaN;
+        return Number(String(valor).replace(",", ".").trim());
+    }
+
+    function obtenerTipoControl(fila) {
+        const tipo = String(fila[8] || "").trim().toUpperCase();
+
+        if (tipo === "HORNO") return "HORNO";
+
+        return "VACIADO";
+    }
+
+    function esRegistroHorno(fila) {
+        return obtenerTipoControl(fila) === "HORNO";
+    }
+
+    function esRegistroVaciado(fila) {
+        return obtenerTipoControl(fila) === "VACIADO";
+    }
+
+    function limpiarGrafico(divId, statusId, mensaje) {
+        charts[divId] = null;
+
+        document.getElementById(divId).innerHTML = `
+            <div class="empty-chart">
+                ${mensaje}
+            </div>
+        `;
+
+        document.getElementById(statusId).innerHTML = 
+            '<span class="status-badge status-sin-datos">Sin datos</span>';
+    }
+
+    function actualizarResumenDia(dataTotal, dataVaciado, dataHorno) {
+        const fechaSeleccionada = document.getElementById("fechaConsulta").value;
+
+        document.getElementById("fechaMostrada").innerText = formatearFechaCL(fechaSeleccionada);
+        document.getElementById("totalRegistros").innerText = 
+            `${dataTotal.length} registros · ${dataVaciado.length} vaciado · ${dataHorno.length} horno`;
+
+        if (dataTotal.length === 0) {
+            document.getElementById("rangoHorario").innerText = "Sin horario";
+            return;
+        }
+
+        const ordenados = [...dataTotal].sort((a, b) => horaASegundos(a[0]) - horaASegundos(b[0]));
+        const primeraHora = extraerHora(ordenados[0][0]);
+        const ultimaHora = extraerHora(ordenados[ordenados.length - 1][0]);
+
+        document.getElementById("rangoHorario").innerText = `${primeraHora} - ${ultimaHora}`;
+    }
+
+    function refresh() {
+        const fechaSeleccionada = document.getElementById("fechaConsulta").value || obtenerFechaHoyISO();
+
+        fetch(WEB_APP_URL + "&fecha=" + fechaSeleccionada + "&t=" + new Date().getTime())
+            .then(r => r.json())
+            .then(res => {
+                if (res.error) {
+                    document.getElementById('syncTime').innerText = "Reintentando...";
+                    return;
+                }
+
+                const rawData = res.slice(1)
+                    .filter(f => {
+                        if (!f[0]) return false;
+                        return normalizarFechaISO(f[0]) === fechaSeleccionada;
+                    })
+                    .sort((a, b) => horaASegundos(a[0]) - horaASegundos(b[0]));
+
+                const dataVaciado = rawData.filter(esRegistroVaciado);
+                const dataHorno = rawData.filter(esRegistroHorno);
+
+                actualizarResumenDia(rawData, dataVaciado, dataHorno);
+
+                if (rawData.length === 0) {
+                    document.getElementById('syncTime').innerText = "Día sin datos";
+
+                    limpiarGrafico('chart_ppm', 'status_ppm', 'Sin registros PPM para este día');
+                    limpiarGrafico('chart_orp', 'status_orp', 'Sin registros ORP para este día');
+                    limpiarGrafico('chart_ph', 'status_ph', 'Sin registros PH para este día');
+                    limpiarGrafico('chart_horno', 'status_horno', 'Sin registros de horno para este día');
+
+                    return;
+                }
+
+                document.getElementById('syncTime').innerText = 
+                    "Act: " + new Date().toLocaleTimeString([], {
+                        hour: '2-digit', 
+                        minute:'2-digit'
+                    });
+
+                if (dataVaciado.length > 0) {
+                    drawChart(dataVaciado, 'chart_ppm', 'status_ppm', LIMITS.ppm, '#0ea5e9', 2, '#');
+                    drawChart(dataVaciado, 'chart_orp', 'status_orp', LIMITS.orp, '#f59e0b', 3, '#');
+                    drawChart(dataVaciado, 'chart_ph', 'status_ph', LIMITS.ph, '#198754', 4, '#.0');
+                } else {
+                    limpiarGrafico('chart_ppm', 'status_ppm', 'Sin registros PPM para este día');
+                    limpiarGrafico('chart_orp', 'status_orp', 'Sin registros ORP para este día');
+                    limpiarGrafico('chart_ph', 'status_ph', 'Sin registros PH para este día');
+                }
+
+                if (dataHorno.length > 0) {
+                    drawHornoChart(dataHorno, 'chart_horno', 'status_horno');
+                } else {
+                    limpiarGrafico('chart_horno', 'status_horno', 'Sin registros de horno para este día');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('syncTime').innerText = "Error de Red";
+            });
+    }
+
+    function drawChart(data, divId, statusId, range, baseColor, colIdx, format) {
+        let dt = new google.visualization.DataTable();
+
+        dt.addColumn('string', 'X');
+        dt.addColumn('number', 'Valor');
+        dt.addColumn({type: 'string', role: 'style'});
+        dt.addColumn({type: 'string', role: 'annotation'});
+        dt.addColumn('number', 'Min');
+        dt.addColumn('number', 'Max');
+
+        let minVal = range[0];
+        let maxVal = range[1];
+        let filasGraficadas = [];
+
+        data.forEach((f) => {
+            let h = extraerHora(f[0]);
+            let val = normalizarNumero(f[colIdx]);
+            let kilos = f[5] ? f[5] + "k" : ""; 
+
+            if (isNaN(val)) return;
+
+            filasGraficadas.push(f);
+
+            if (val < minVal) minVal = val;
+            if (val > maxVal) maxVal = val;
+
+            let fuera = (val < range[0] || val > range[1]);
+            let estilo = fuera 
+                ? 'point { size: 7; fill-color: #dc3545; }' 
+                : 'point { size: 5; fill-color: ' + baseColor + '; }';
+
+            dt.addRow([
+                `${filasGraficadas.length}\n${h}\n${kilos}`, 
+                val, 
+                estilo, 
+                String(f[6] || "").toUpperCase() === "SI" ? "MOD" : null, 
+                range[0], 
+                range[1]
+            ]);
+        });
+
+        if (filasGraficadas.length === 0) {
+            limpiarGrafico(divId, statusId, 'Sin datos válidos para graficar');
+            return;
+        }
+
+        const padding = (range[1] - range[0]) * 0.5;
+        const vMin = Math.min(range[0], minVal) - padding;
+        const vMax = Math.max(range[1], maxVal) + padding;
+        const muchasEtiquetas = filasGraficadas.length > 8;
+
+        charts[divId] = new google.visualization.ComboChart(document.getElementById(divId));
+
+        google.visualization.events.addListener(charts[divId], 'select', function() {
+            let sel = charts[divId].getSelection()[0];
+
+            if (sel && sel.row !== null) {
+                let registro = filasGraficadas[sel.row];
+
+                if (registro[7] && registro[7] !== "Sin foto") {
+                    document.getElementById('imgRegistro').src = registro[7];
+                    document.getElementById('infoRegistro').innerText = 
+                        `Tipo: Vaciado | Op: ${registro[1]} | ${registro[5]} KG | ${extraerHora(registro[0])}`;
+
+                    new bootstrap.Modal(document.getElementById('fotoModal')).show();
+                }
+            }
+        });
+
+        charts[divId].draw(dt, {
+            backgroundColor: 'transparent', 
+            legend: 'none',
+            chartArea: { 
+                width: '90%', 
+                height: muchasEtiquetas ? '62%' : '70%', 
+                top: 10, 
+                left: 45, 
+                right: 10, 
+                bottom: muchasEtiquetas ? 70 : 50
+            },
+            animation: { 
+                duration: 500, 
+                easing: 'out', 
+                startup: true 
+            },
+            hAxis: { 
+                textStyle: { 
+                    color: '#64748b', 
+                    fontSize: muchasEtiquetas ? 8 : 9
+                }, 
+                gridlines: { 
+                    color: 'transparent' 
+                },
+                showTextEvery: 1,
+                slantedText: muchasEtiquetas,
+                slantedTextAngle: 45,
+                maxAlternation: 1
+            },
+            vAxis: { 
+                textStyle: { 
+                    color: '#64748b', 
+                    fontSize: 10 
+                }, 
+                gridlines: { 
+                    color: '#e2e8f0' 
+                },
+                baselineColor: '#cbd5e1',
+                viewWindow: { 
+                    min: vMin, 
+                    max: vMax 
+                },
+                ticks: [range[0], range[1]],
+                format: format
+            },
+            series: { 
+                0: { 
+                    color: baseColor, 
+                    lineWidth: 3, 
+                    pointsVisible: true, 
+                    type: 'line' 
+                }, 
+                1: { 
+                    color: '#cbd5e1', 
+                    lineDashStyle: [4, 4], 
+                    lineWidth: 2, 
+                    pointSize: 0 
+                }, 
+                2: { 
+                    color: '#cbd5e1', 
+                    lineDashStyle: [4, 4], 
+                    lineWidth: 2, 
+                    pointSize: 0 
+                } 
+            },
+            annotations: { 
+                textStyle: { 
+                    fontSize: 9, 
+                    color: '#dc3545', 
+                    bold: true 
+                }, 
+                alwaysOutside: true 
+            }
+        });
+
+        const ultimoVal = normalizarNumero(filasGraficadas[filasGraficadas.length - 1][colIdx]);
+        const isOk = !(ultimoVal < range[0] || ultimoVal > range[1]);
+
+        document.getElementById(statusId).innerHTML = isOk ? 
+            '<span class="status-badge status-normal">Normal</span>' : 
+            '<span class="status-badge status-fuera">Revisar</span>';
+    }
+
+    function drawHornoChart(data, divId, statusId) {
+        let dt = new google.visualization.DataTable();
+
+        dt.addColumn('string', 'X');
+        dt.addColumn('number', 'Temperatura');
+        dt.addColumn({type: 'string', role: 'style'});
+        dt.addColumn({type: 'string', role: 'annotation'});
+
+        let minVal = null;
+        let maxVal = null;
+        let filasGraficadas = [];
+
+        data.forEach((f) => {
+            const h = extraerHora(f[0]);
+            const val = normalizarNumero(f[9]);
+
+            if (isNaN(val)) return;
+
+            filasGraficadas.push(f);
+
+            if (minVal === null || val < minVal) minVal = val;
+            if (maxVal === null || val > maxVal) maxVal = val;
+
+            dt.addRow([
+                `${filasGraficadas.length}\n${h}`,
+                val,
+                'point { size: 7; fill-color: #f59e0b; }',
+                `${val.toFixed(1)}°`
+            ]);
+        });
+
+        if (filasGraficadas.length === 0) {
+            limpiarGrafico(divId, statusId, 'Sin temperaturas válidas para graficar');
+            return;
+        }
+
+        const vMin = Math.min(20, minVal - 1);
+        const vMax = Math.max(40, maxVal + 1);
+        const muchasEtiquetas = filasGraficadas.length > 8;
+
+        charts[divId] = new google.visualization.ComboChart(document.getElementById(divId));
+
+        google.visualization.events.addListener(charts[divId], 'select', function() {
+            let sel = charts[divId].getSelection()[0];
+
+            if (sel && sel.row !== null) {
+                let registro = filasGraficadas[sel.row];
+
+                if (registro[7] && registro[7] !== "Sin foto") {
+                    const temp = normalizarNumero(registro[9]);
+
+                    document.getElementById('imgRegistro').src = registro[7];
+                    document.getElementById('infoRegistro').innerText = 
+                        `Tipo: Horno | Op: ${registro[1]} | Temp: ${isNaN(temp) ? "--" : temp.toFixed(1) + "°C"} | ${extraerHora(registro[0])}`;
+
+                    new bootstrap.Modal(document.getElementById('fotoModal')).show();
+                }
+            }
+        });
+
+        charts[divId].draw(dt, {
+            backgroundColor: 'transparent', 
+            legend: 'none',
+            chartArea: { 
+                width: '90%', 
+                height: muchasEtiquetas ? '62%' : '70%', 
+                top: 10, 
+                left: 45, 
+                right: 10, 
+                bottom: muchasEtiquetas ? 70 : 50
+            },
+            animation: { 
+                duration: 500, 
+                easing: 'out', 
+                startup: true 
+            },
+            hAxis: { 
+                textStyle: { 
+                    color: '#64748b', 
+                    fontSize: muchasEtiquetas ? 8 : 9
+                }, 
+                gridlines: { 
+                    color: 'transparent' 
+                },
+                showTextEvery: 1,
+                slantedText: muchasEtiquetas,
+                slantedTextAngle: 45,
+                maxAlternation: 1
+            },
+            vAxis: { 
+                textStyle: { 
+                    color: '#64748b', 
+                    fontSize: 10 
+                }, 
+                gridlines: { 
+                    color: '#e2e8f0' 
+                },
+                baselineColor: '#cbd5e1',
+                viewWindow: { 
+                    min: vMin, 
+                    max: vMax 
+                },
+                ticks: [20, 25, 30, 35, 40],
+                format: '#.0'
+            },
+            series: { 
+                0: { 
+                    color: '#f59e0b', 
+                    lineWidth: 3, 
+                    pointsVisible: true, 
+                    type: 'line' 
+                }
+            },
+            annotations: { 
+                textStyle: { 
+                    fontSize: 9, 
+                    color: '#f59e0b', 
+                    bold: true 
+                }, 
+                alwaysOutside: true 
+            }
+        });
+
+        const ultimoVal = normalizarNumero(filasGraficadas[filasGraficadas.length - 1][9]);
+
+        document.getElementById(statusId).innerHTML = 
+            `<span class="status-badge status-horno">Última ${ultimoVal.toFixed(1)}°C</span>`;
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Frío Pro</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --bg-app: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-soft: #38bdf8;
+            --green-soft: #4ade80;
+            --red-soft: #f87171;
+            --warning-amber: #fbbf24;
+        }
+
+        body { 
+            background-color: var(--bg-app); 
+            color: var(--text-main); 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 10px; 
+        }
+
+        .access-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .access-card {
+            width: 100%;
+            max-width: 430px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+        }
+
+        .access-logo {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .access-logo img {
+            height: 44px;
+            margin-bottom: 8px;
+        }
+
+        .access-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .access-subtitle {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-top: 4px;
+        }
+
+        .access-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .access-input {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #0f172a;
+            color: var(--text-main);
+            border-radius: 14px;
+            padding: 12px 14px;
+            outline: none;
+            font-weight: 600;
+        }
+
+        .access-input:focus {
+            border-color: var(--accent-soft);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .access-btn {
+            width: 100%;
+            border: none;
+            background: var(--accent-soft);
+            color: #0f172a;
+            font-weight: 900;
+            padding: 13px;
+            border-radius: 14px;
+            text-transform: uppercase;
+            margin-top: 12px;
+        }
+
+        .access-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .access-msg {
+            margin-top: 14px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.35;
+        }
+
+        .access-msg.error {
+            color: var(--red-soft);
+        }
+
+        .access-msg.ok {
+            color: var(--green-soft);
+        }
+
+        .access-msg.warn {
+            color: var(--warning-amber);
+        }
+
+        .logout-btn {
+            border: none;
+            background: rgba(248, 113, 113, 0.12);
+            color: var(--red-soft);
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 6px 10px;
+            border-radius: 50px;
+            text-transform: uppercase;
+        }
+
+        .app-hidden {
+            display: none !important;
+        }
+
+        .app-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 8px 15px; 
+            margin-bottom: 12px; 
+            background: rgba(30, 41, 59, 0.5); 
+            border-radius: 15px; 
+            gap: 10px;
+        }
+
+        .logo-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            min-width: 0;
+        }
+
+        .logo-img { 
+            height: 35px; 
+            width: auto; 
+            object-fit: contain; 
+        }
+
+        .app-title { 
+            font-size: 1rem; 
+            font-weight: 700; 
+            margin: 0; 
+            text-transform: uppercase; 
+            white-space: nowrap;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sync-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.2);
+            padding: 5px 10px;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+
+        .date-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.2);
+            padding: 5px 8px;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+
+        .date-control label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .date-field {
+            position: relative;
+            min-width: 150px;
+        }
+
+        .date-field input {
+            width: 100%;
+            height: 30px;
+            background: #0f172a;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px;
+            padding: 4px 38px 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            outline: none;
+            color-scheme: dark;
+            box-sizing: border-box;
+        }
+
+        .date-field input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ffffff;
+            font-size: 1rem;
+            pointer-events: none;
+            opacity: 0.95;
+        }
+
+        .btn-hoy {
+            border: none;
+            background: var(--accent-soft);
+            color: #0f172a;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 5px 10px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .interactive-zone { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+
+        .group-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 10px; 
+        }
+
+        .nav-btn { 
+            background: var(--card-bg); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: white; 
+            border-radius: 50%; 
+            width: 32px; 
+            height: 32px; 
+        }
+
+        .cards-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); 
+            gap: 12px; 
+            margin-bottom: 15px; 
+        }
+        
+        .cam-card { 
+            background: var(--card-bg); 
+            border-radius: 18px; 
+            padding: 12px; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            transition: border 0.3s ease; 
+        }
+
+        .cam-card:hover { 
+            transform: none !important; 
+        } 
+        
+        .cam-card.alert-active { 
+            border: 2px solid var(--red-soft); 
+            animation: pulse-border 1.5s infinite; 
+        }
+
+        .cam-card.no-data {
+            min-height: 145px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+            border: 1px dashed rgba(148, 163, 184, 0.35);
+            background: rgba(30, 41, 59, 0.45);
+            color: var(--text-muted);
+        }
+
+        .no-data-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-soft);
+            font-size: 1.1rem;
+        }
+
+        .no-data-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .no-data-subtitle {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(248, 113, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
+        }
+
+        .card-stat-label { 
+            font-size: 0.55rem; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+        }
+
+        .card-stat-val { 
+            font-size: 1.2rem; 
+            font-weight: 700; 
+        }
+
+        .card-control-time {
+            font-size: 0.52rem;
+            color: var(--text-main);
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            border-radius: 50px;
+            padding: 2px 6px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .cam-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .cam-card-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .card-pulp-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 4px; 
+            margin-top: 8px; 
+            background: rgba(0,0,0,0.15); 
+            padding: 6px; 
+            border-radius: 10px; 
+        }
+
+        .p-dot { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            font-size: 0.65rem; 
+            border-radius: 4px; 
+            padding: 2px; 
+            background: rgba(255,255,255,0.03); 
+            min-width: 0;
+        }
+
+        .p-dot-idx { 
+            font-size: 0.45rem; 
+            color: var(--text-muted); 
+        }
+
+        .p-dot-val { 
+            font-weight: 700; 
+        }
+
+        .p-dot-var {
+            font-size: 0.42rem;
+            color: var(--accent-soft);
+            font-weight: 700;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .list-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+
+        .row-item { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 12px; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            position: relative; 
+        }
+
+        .row-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding-bottom: 5px; 
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .row-stats { 
+            display: flex; 
+            justify-content: space-around; 
+            background: rgba(0,0,0,0.2); 
+            border-radius: 10px; 
+            padding: 8px; 
+        }
+
+        .pulp-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 6px; 
+        }
+
+        .p-box { 
+            background: rgba(15, 23, 42, 0.6); 
+            border-radius: 8px; 
+            padding: 6px 8px; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 6px;
+        }
+
+        .p-info { 
+            display: flex; 
+            flex-direction: column; 
+            min-width: 0;
+        }
+
+        .p-idx { 
+            font-size: 0.6rem; 
+            color: var(--text-muted); 
+            font-weight: 600; 
+        }
+
+        .p-val { 
+            font-size: 0.95rem; 
+            font-weight: 800; 
+            line-height: 1.1;
+        }
+
+        .p-var {
+            font-size: 0.55rem;
+            color: var(--accent-soft);
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1.1;
+            max-width: 90px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .p-obs { 
+            font-size: 0.55rem; 
+            color: var(--warning-amber); 
+            text-align: right; 
+            max-width: 60%; 
+            line-height: 1; 
+        }
+
+        .obs-general { 
+            font-size: 0.7rem; 
+            background: rgba(56, 189, 248, 0.05); 
+            padding: 6px; 
+            border-radius: 8px; 
+            border-left: 3px solid var(--accent-soft); 
+        }
+        
+        .btn-photo { 
+            background: var(--accent-soft); 
+            color: var(--bg-app); 
+            border: none; 
+            border-radius: 8px; 
+            padding: 8px 12px; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .btn-photo:hover { 
+            background: #fff; 
+        }
+
+        .btn-photo.disabled { 
+            background: #334155; 
+            color: #64748b; 
+            cursor: not-allowed; 
+        }
+
+        @media (max-width: 600px) {
+            .app-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header-right {
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .date-control {
+                width: 100%;
+                justify-content: space-between;
+                border-radius: 16px;
+                padding: 8px;
+            }
+
+            .date-field {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .row-item { 
+                flex-direction: row; 
+                align-items: center; 
+                justify-content: space-between; 
+                padding: 10px 20px; 
+            }
+
+            .row-header { 
+                border: none; 
+                padding: 0; 
+                min-width: 170px; 
+            }
+
+            .row-stats { 
+                background: none; 
+                min-width: 400px; 
+                gap: 30px; 
+                justify-content: flex-start; 
+                padding-left: 20px; 
+            }
+
+            .pulp-grid { 
+                grid-template-columns: repeat(6, 1fr); 
+                flex-grow: 1; 
+                margin: 0 20px; 
+            }
+
+            .p-box { 
+                flex-direction: column; 
+                text-align: center; 
+                justify-content: center; 
+                min-height: 68px; 
+                padding: 6px 4px;
+            }
+
+            .p-var {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .p-obs { 
+                text-align: center; 
+                max-width: 100%; 
+                margin-top: 2px; 
+            }
+
+            .photo-col { 
+                min-width: 50px; 
+                text-align: right; 
+            }
+        }
+        
+        .v-amb { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+        }
+
+        .v-var { 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: var(--accent-soft); 
+            text-transform: uppercase; 
+        }
+
+        .label-exportadora { 
+            font-weight: 800; 
+            font-size: 0.75rem; 
+            letter-spacing: 0.5px; 
+        }
+
+        .text-surfrut { 
+            color: var(--accent-soft); 
+        }
+
+        .text-planta { 
+            color: var(--text-muted); 
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="accessScreen" class="access-screen">
+    <div class="access-card">
+        <div class="access-logo">
+            <img src="logo-icono.png" alt="Logo">
+            <h1 class="access-title">Monitor Frío</h1>
+            <div class="access-subtitle">Acceso privado por correo autorizado</div>
+        </div>
+
+        <div id="stepEmail">
+            <div class="mb-3">
+                <label class="access-label">Nombre</label>
+                <input type="text" id="accessNombre" class="access-input" placeholder="Tu nombre">
+            </div>
+
+            <div class="mb-2">
+                <label class="access-label">Correo</label>
+                <input type="email" id="accessEmail" class="access-input" placeholder="correo@empresa.cl">
+            </div>
+
+            <button id="btnSolicitar" class="access-btn" onclick="solicitarAcceso()">
+                Solicitar / ingresar
+            </button>
+        </div>
+
+        <div id="stepCodigo" class="app-hidden">
+            <div class="mb-3">
+                <label class="access-label">Código recibido por correo</label>
+                <input type="text" id="accessCodigo" class="access-input" placeholder="Ej: 123456" inputmode="numeric">
+            </div>
+
+            <button id="btnValidar" class="access-btn" onclick="validarCodigo()">
+                Validar código
+            </button>
+
+            <button class="access-btn" style="background:rgba(148,163,184,0.18); color:var(--text-main);" onclick="volverPasoEmail()">
+                Cambiar correo
+            </button>
+        </div>
+
+        <div id="accessMsg" class="access-msg">
+            Ingresa tu correo. Si no estás autorizado, se enviará una solicitud al administrador.
+        </div>
+    </div>
+</div>
+
+<div id="appContent" class="app-hidden">
+    <header class="app-header">
+        <div class="logo-wrapper">
+            <img src="logo-icono.png" alt="Logo" class="logo-img">
+            <h1 class="app-title">MONITOR FRÍO</h1>
+        </div>
+
+        <div class="header-right">
+            <div class="date-control">
+                <label for="fechaConsulta">Día</label>
+
+                <div class="date-field">
+                    <input type="date" id="fechaConsulta" onchange="syncData()">
+                    <i class="bi bi-calendar3 calendar-icon"></i>
+                </div>
+
+                <button class="btn-hoy" onclick="volverAHoyMonitor()">Hoy</button>
+            </div>
+
+            <div id="reloj" class="sync-info small">00:00:00</div>
+            <button class="logout-btn" onclick="cerrarSesion()">Salir</button>
+        </div>
+    </header>
+
+    <div class="interactive-zone" id="main-carousel" onmouseover="isPaused=true" onmouseout="isPaused=false">
+        <div class="group-nav">
+            <button class="nav-btn" onclick="manualChange(-1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <span id="group-label" class="badge bg-primary px-3 py-2">Grupo</span>
+
+            <button class="nav-btn" onclick="manualChange(1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+        <div id="cards-container" class="cards-grid"></div>
+    </div>
+
+    <div class="list-container" id="data-list"></div>
+</div>
+
+<script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxnVLO6fLBvmtiWCcE6ZZFBy1H3TSxSJA4sxq3HVc3CpZjVnpVcNyJION_U5XPCJhqlJQ/exec";
+
+    let allData = [];
+    let currentGroup = 0;
+    let isPaused = false;
+    let monitorEmail = localStorage.getItem("monitorFrioEmail") || "";
+    let monitorToken = localStorage.getItem("monitorFrioToken") || "";
+
+    const groups = [
+        { label: "Cámaras 2 - 5", ids: ["2", "3", "4", "5"] },
+        { label: "Cámaras 6 - 9", ids: ["6", "7", "8", "9"] },
+        { label: "Cámaras 10 - 12", ids: ["10", "11", "12"] }
+    ];
+
+    function setAccessMsg(texto, tipo = "") {
+        const msg = document.getElementById("accessMsg");
+        msg.className = "access-msg";
+        if (tipo) msg.classList.add(tipo);
+        msg.innerText = texto;
+    }
+
+    function setBtnLoading(id, loading, textoNormal, textoLoading) {
+        const btn = document.getElementById(id);
+        btn.disabled = loading;
+        btn.innerText = loading ? textoLoading : textoNormal;
+    }
+
+    function mostrarLogin() {
+        document.getElementById("accessScreen").classList.remove("app-hidden");
+        document.getElementById("appContent").classList.add("app-hidden");
+    }
+
+    function mostrarApp() {
+        document.getElementById("accessScreen").classList.add("app-hidden");
+        document.getElementById("appContent").classList.remove("app-hidden");
+    }
+
+    function volverPasoEmail() {
+        document.getElementById("stepEmail").classList.remove("app-hidden");
+        document.getElementById("stepCodigo").classList.add("app-hidden");
+        document.getElementById("accessCodigo").value = "";
+        setAccessMsg("Ingresa tu correo. Si no estás autorizado, se enviará una solicitud al administrador.");
+    }
+
+    function irPasoCodigo() {
+        document.getElementById("stepEmail").classList.add("app-hidden");
+        document.getElementById("stepCodigo").classList.remove("app-hidden");
+    }
+
+    async function solicitarAcceso() {
+        const nombre = document.getElementById("accessNombre").value.trim();
+        const email = document.getElementById("accessEmail").value.trim().toLowerCase();
+
+        if (!email || !email.includes("@")) {
+            setAccessMsg("Ingresa un correo válido.", "error");
+            return;
+        }
+
+        monitorEmail = email;
+        localStorage.setItem("monitorFrioEmail", email);
+
+        setBtnLoading("btnSolicitar", true, "Solicitar / ingresar", "Enviando...");
+        setAccessMsg("Validando correo...", "");
+
+        try {
+            const url = WEB_APP_URL
+                + "?accion=solicitarAccesoMonitor"
+                + "&nombre=" + encodeURIComponent(nombre)
+                + "&email=" + encodeURIComponent(email)
+                + "&t=" + new Date().getTime();
+
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data.status === "codigo_enviado") {
+                irPasoCodigo();
+                setAccessMsg(data.message || "Código enviado a tu correo.", "ok");
+            } else if (data.status === "pendiente") {
+                setAccessMsg(data.message || "Solicitud pendiente de aprobación.", "warn");
+            } else if (data.status === "rechazado") {
+                setAccessMsg(data.message || "Solicitud rechazada.", "error");
+            } else {
+                setAccessMsg(data.message || "No se pudo solicitar acceso.", "error");
+            }
+
+        } catch (e) {
+            console.error(e);
+            setAccessMsg("Error de conexión al solicitar acceso.", "error");
+        } finally {
+            setBtnLoading("btnSolicitar", false, "Solicitar / ingresar", "Enviando...");
+        }
+    }
+
+    async function validarCodigo() {
+        const email = monitorEmail || document.getElementById("accessEmail").value.trim().toLowerCase();
+        const codigo = document.getElementById("accessCodigo").value.trim();
+
+        if (!email || !codigo) {
+            setAccessMsg("Ingresa el correo y el código.", "error");
+            return;
+        }
+
+        setBtnLoading("btnValidar", true, "Validar código", "Validando...");
+        setAccessMsg("Validando código...", "");
+
+        try {
+            const url = WEB_APP_URL
+                + "?accion=validarCodigoMonitor"
+                + "&email=" + encodeURIComponent(email)
+                + "&codigo=" + encodeURIComponent(codigo)
+                + "&t=" + new Date().getTime();
+
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data.status === "autorizado" && data.token) {
+                monitorEmail = data.email || email;
+                monitorToken = data.token;
+
+                localStorage.setItem("monitorFrioEmail", monitorEmail);
+                localStorage.setItem("monitorFrioToken", monitorToken);
+
+                setAccessMsg("Acceso autorizado.", "ok");
+                mostrarApp();
+                syncData();
+            } else {
+                setAccessMsg(data.message || "Código inválido.", "error");
+            }
+
+        } catch (e) {
+            console.error(e);
+            setAccessMsg("Error de conexión al validar código.", "error");
+        } finally {
+            setBtnLoading("btnValidar", false, "Validar código", "Validando...");
+        }
+    }
+
+    function cerrarSesion() {
+        localStorage.removeItem("monitorFrioToken");
+        monitorToken = "";
+        allData = [];
+        document.getElementById("data-list").innerHTML = "";
+        document.getElementById("cards-container").innerHTML = "";
+        mostrarLogin();
+        volverPasoEmail();
+        setAccessMsg("Sesión cerrada. Ingresa nuevamente para ver el monitor.");
+    }
+
+    function normalizarExportadora(valor) {
+        const exp = String(valor || "").trim().toUpperCase();
+
+        if (exp === "SURFRUT" || exp === "SOLFRUT") {
+            return "SURFRUT";
+        }
+
+        return "PLANTA";
+    }
+
+    function extraerDetallePulpa(detalle, variedadGeneral) {
+        const texto = String(detalle || "").trim();
+
+        let variedad = "";
+        let obs = "";
+
+        if (texto) {
+            const sinIndice = texto.replace(/^P\d+:\s*/i, "").trim();
+
+            if (sinIndice.includes("|")) {
+                variedad = sinIndice.split("|")[0].trim();
+            }
+
+            const matchObs = texto.match(/\(([^)]+)\)/);
+            if (matchObs) {
+                obs = matchObs[1].trim();
+            }
+        }
+
+        if (!variedad) {
+            const variedades = String(variedadGeneral || "")
+                .split(",")
+                .map(v => v.trim())
+                .filter(v => v);
+
+            if (variedades.length === 1) {
+                variedad = variedades[0];
+            }
+        }
+
+        return {
+            variedad: variedad || "S/V",
+            obs
+        };
+    }
+
+    function obtenerVariedadPulpa(row, index, detallesRaw) {
+        const variedadesPorPulpaExtra = row[16] 
+            ? String(row[16]).split("|").map(v => v.trim()) 
+            : [];
+
+        if (variedadesPorPulpaExtra[index]) {
+            return variedadesPorPulpaExtra[index];
+        }
+
+        return extraerDetallePulpa(detallesRaw[index], row[2]).variedad;
+    }
+
+    function getLimits(row) {
+        const rawVariedades = row[2] ? row[2].toLowerCase() : "";
+        const listaVariedades = rawVariedades.split(',').map(v => v.trim()).filter(v => v);
+        const exportadora = normalizarExportadora(row[15]);
+
+        if (exportadora === "SURFRUT") {
+            return { 
+                ambMin: -0.5, 
+                ambMax: 0.5, 
+                pulpMin: -1.0, 
+                pulpMax: 1.5 
+            };
+        }
+
+        let ambMins = [];
+        let ambMaxs = [];
+        let pulpMins = [];
+        let pulpMaxs = [];
+
+        listaVariedades.forEach(variedad => {
+            if (
+                variedad.includes("gala") || 
+                variedad.includes("fuji") || 
+                variedad.includes("red delicius") || 
+                variedad.includes("red delicious") ||
+                variedad.includes("red del")
+            ) {
+                ambMins.push(-1.0);
+                ambMaxs.push(0.0);
+                pulpMins.push(-0.5); 
+                pulpMaxs.push(0.5);
+
+            } else if (
+                variedad.includes("granny") || 
+                variedad.includes("cripps") || 
+                variedad.includes("pink")
+            ) {
+                ambMins.push(0.0);
+                ambMaxs.push(1.0);
+                pulpMins.push(0.5); 
+                pulpMaxs.push(1.5);
+
+            } else {
+                ambMins.push(-1.0);
+                ambMaxs.push(1.0);
+                pulpMins.push(-0.5); 
+                pulpMaxs.push(1.5);
+            }
+        });
+
+        if (
+            ambMins.length === 0 || 
+            ambMaxs.length === 0 || 
+            pulpMins.length === 0 || 
+            pulpMaxs.length === 0
+        ) {
+            return { 
+                ambMin: -1.0, 
+                ambMax: 1.0, 
+                pulpMin: -0.5, 
+                pulpMax: 1.5 
+            };
+        }
+
+        return { 
+            ambMin: Math.min(...ambMins), 
+            ambMax: Math.max(...ambMaxs), 
+            pulpMin: Math.min(...pulpMins), 
+            pulpMax: Math.max(...pulpMaxs)
+        };
+    }
+
+    function checkAlert(val, min, max) { 
+        return val < min || val > max; 
+    }
+
+    function formatearHoraChileDesdeDate(date) {
+        const partes = new Intl.DateTimeFormat("es-CL", {
+            timeZone: "America/Santiago",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+            hourCycle: "h23"
+        }).formatToParts(date);
+
+        const obj = {};
+        partes.forEach(p => {
+            obj[p.type] = p.value;
+        });
+
+        return `${obj.hour}:${obj.minute}`;
+    }
+
+    function formatearFechaChileDesdeDate(date) {
+        const partes = new Intl.DateTimeFormat("es-CL", {
+            timeZone: "America/Santiago",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }).formatToParts(date);
+
+        const obj = {};
+        partes.forEach(p => {
+            obj[p.type] = p.value;
+        });
+
+        return `${obj.year}-${obj.month}-${obj.day}`;
+    }
+
+    function obtenerFechaISOChile(valor) {
+        if (!valor) return "";
+
+        const str = String(valor).trim();
+
+        if (/^\d{4}-\d{2}-\d{2}T/.test(str)) {
+            const date = new Date(str);
+            if (!isNaN(date.getTime())) return formatearFechaChileDesdeDate(date);
+        }
+
+        if (str.includes("/")) {
+            const fechaParte = str.split(" ")[0];
+            const p = fechaParte.split("/");
+
+            if (p.length === 3) {
+                return `${p[2]}-${p[1].padStart(2, "0")}-${p[0].padStart(2, "0")}`;
+            }
+        }
+
+        if (str.includes("-")) {
+            return str.split("T")[0].split(" ")[0];
+        }
+
+        const date = new Date(str);
+        if (!isNaN(date.getTime())) return formatearFechaChileDesdeDate(date);
+
+        return "";
+    }
+
+    function obtenerFechaHoyISOChile() {
+        return formatearFechaChileDesdeDate(new Date());
+    }
+
+    function obtenerFechaSeleccionadaISO() {
+        const input = document.getElementById("fechaConsulta");
+        return input && input.value ? input.value : obtenerFechaHoyISOChile();
+    }
+
+    function volverAHoyMonitor() {
+        const input = document.getElementById("fechaConsulta");
+        if (input) input.value = obtenerFechaHoyISOChile();
+        syncData();
+    }
+
+
+    function obtenerHoraControl(row) {
+        if (!row || !row[0]) return "--:--";
+
+        const valor = row[0];
+        const str = String(valor).trim();
+
+        if (/^\d{4}-\d{2}-\d{2}T/.test(str)) {
+            const date = new Date(str);
+            if (!isNaN(date.getTime())) return formatearHoraChileDesdeDate(date);
+        }
+
+        const matchFechaChile = str.match(/\d{1,2}\/\d{1,2}\/\d{4}\s+(\d{1,2}:\d{2})/);
+        if (matchFechaChile) {
+            return matchFechaChile[1].padStart(5, "0");
+        }
+
+        const matchHora = str.match(/\b(\d{1,2}:\d{2})(?::\d{2})?\b/);
+        if (matchHora) {
+            return matchHora[1].padStart(5, "0");
+        }
+
+        const fecha = new Date(valor);
+        if (isNaN(fecha.getTime())) return "--:--";
+
+        return formatearHoraChileDesdeDate(fecha);
+    }
+
+    function horaASegundos(row) {
+        const h = obtenerHoraControl(row);
+        const partes = h.split(":").map(n => parseInt(n, 10));
+
+        if (partes.length < 2 || isNaN(partes[0]) || isNaN(partes[1])) return 0;
+
+        return partes[0] * 3600 + partes[1] * 60;
+    }
+
+    async function syncData() {
+        if (!monitorEmail || !monitorToken) {
+            mostrarLogin();
+            return;
+        }
+
+        try {
+            const fechaSeleccionada = obtenerFechaSeleccionadaISO();
+
+            const url = WEB_APP_URL
+                + "?accion=datosMonitorFrio"
+                + "&email=" + encodeURIComponent(monitorEmail)
+                + "&token=" + encodeURIComponent(monitorToken)
+                + "&fecha=" + encodeURIComponent(fechaSeleccionada)
+                + "&t=" + new Date().getTime();
+
+            const response = await fetch(url);
+            const json = await response.json();
+
+            if (json && json.error === "no_autorizado") {
+                localStorage.removeItem("monitorFrioToken");
+                monitorToken = "";
+                mostrarLogin();
+                setAccessMsg("Sesión vencida o no autorizada. Ingresa nuevamente.", "error");
+                return;
+            }
+
+            if (!json || json.length < 2) {
+                allData = [];
+                drawUI();
+                return;
+            }
+
+            allData = json.slice(1).filter(row => 
+                row[0] && obtenerFechaISOChile(row[0]) === fechaSeleccionada
+            );
+
+            drawUI();
+
+        } catch (e) { 
+            console.error(e); 
+            document.getElementById('data-list').innerHTML = `
+                <div class="row-item text-center text-danger fw-bold">
+                    Error al conectar con la base de datos
+                </div>
+            `;
+        }
+    }
+
+    function drawUI() {
+        const listContainer = document.getElementById('data-list');
+        const historySorted = [...allData].sort((a, b) => horaASegundos(b) - horaASegundos(a));
+
+        if (historySorted.length === 0) {
+            listContainer.innerHTML = `
+                <div class="row-item text-center text-muted fw-bold">
+                    Sin registros de frigorífico para el día seleccionado
+                </div>
+            `;
+
+            renderCards({});
+            return;
+        }
+
+        listContainer.innerHTML = historySorted.map(r => {
+            const limits = getLimits(r);
+            const variedad = r[2] || 'S/V';
+            const tAmb = Number(r[4] || 0);
+            const hum = Number(r[11] || 0);
+            const hora = obtenerHoraControl(r);
+            const obsGeneral = r[13];
+            const detallesRaw = r[14] ? String(r[14]).split(' | ') : [];
+            const linkFoto = r[12];
+            const expName = normalizarExportadora(r[15]);
+
+            let pulpasHtml = "";
+
+            for (let i = 1; i <= 6; i++) {
+                const val = Number(r[4 + i] || 0);
+                const isPulpAlert = checkAlert(val, limits.pulpMin, limits.pulpMax);
+
+                const detallePulpa = extraerDetallePulpa(detallesRaw[i - 1], variedad);
+                const variedadPulpa = obtenerVariedadPulpa(r, i - 1, detallesRaw);
+                const obsFruto = detallePulpa.obs;
+
+                pulpasHtml += `
+                    <div class="p-box">
+                        <div class="p-info">
+                            <span class="p-idx">P${i}</span>
+                            <span class="p-val ${isPulpAlert ? 'text-danger' : 'text-success'}">${val.toFixed(1)}°</span>
+                            <span class="p-var">${variedadPulpa}</span>
+                        </div>
+
+                        ${obsFruto ? `<span class="p-obs">${obsFruto}</span>` : ''}
+                    </div>
+                `;
+            }
+
+            const isAmbAlert = checkAlert(tAmb, limits.ambMin, limits.ambMax);
+            const isHumAlert = hum < 85 || hum > 95;
+
+            return `
+                <div class="row-item">
+                    <div class="row-header">
+                        <span class="fw-bold text-primary">CÁMARA ${r[3]}</span>
+                        <span class="card-control-time">
+                            <i class="bi bi-clock"></i> Control ${hora}
+                        </span>
+                    </div>
+
+                    <div class="row-stats">
+                        <div class="text-center">
+                            <span class="p-idx d-block">AMBIENTE</span>
+                            <span class="v-amb ${isAmbAlert ? 'text-danger' : 'text-success'}">${tAmb.toFixed(1)}°</span>
+                        </div>
+
+                        <div class="text-center">
+                            <span class="p-idx d-block">HUMEDAD</span>
+                            <span class="v-amb ${isHumAlert ? 'text-danger' : 'text-main'}">${hum}%</span>
+                        </div>
+
+                        <div class="text-center">
+                            <span class="p-idx d-block">VARIEDAD CÁMARA</span>
+                            <span class="v-var">${variedad}</span>
+                        </div>
+                    </div>
+
+                    <div class="pulp-grid">${pulpasHtml}</div>
+
+                    <div class="d-flex align-items-center gap-2" style="min-width: 150px;">
+                        <div class="flex-grow-1 text-end">
+                            <div class="label-exportadora ${expName === 'SURFRUT' ? 'text-surfrut' : 'text-planta'}">${expName}</div>
+                            ${obsGeneral ? `<div class="obs-general mt-1 text-start">${obsGeneral}</div>` : ''}
+                        </div>
+
+                        <div class="photo-col">
+                            ${
+                                linkFoto && linkFoto !== "Sin foto" 
+                                ? `<button class="btn-photo" onclick="window.open('${linkFoto}', '_blank')"><i class="bi bi-camera"></i></button>` 
+                                : `<button class="btn-photo disabled"><i class="bi bi-camera"></i></button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const latest = {};
+
+        allData.forEach(row => { 
+            latest[row[3]] = row; 
+        });
+
+        renderCards(latest);
+    }
+
+    function renderCards(latest) {
+        const container = document.getElementById('cards-container');
+        const activeGroup = groups[currentGroup];
+
+        document.getElementById('group-label').innerText = activeGroup.label;
+
+        container.innerHTML = activeGroup.ids.map(id => {
+            const r = latest[id];
+
+            if(!r) {
+                return `
+                    <div class="cam-card no-data">
+                        <div class="no-data-icon">
+                            <i class="bi bi-database-slash"></i>
+                        </div>
+
+                        <div class="no-data-title">CÁMARA ${id}</div>
+
+                        <div class="no-data-subtitle">
+                            Sin información<br>
+                            del día seleccionado
+                        </div>
+                    </div>
+                `;
+            }
+            
+            const limits = getLimits(r);
+            const tAmb = Number(r[4] || 0);
+            const hum = Number(r[11] || 0);
+            const detallesRaw = r[14] ? String(r[14]).split(' | ') : [];
+            const expName = normalizarExportadora(r[15]);
+            const horaControl = obtenerHoraControl(r);
+
+            let pulpasHtml = "";
+            let anyPulpAlert = false;
+            
+            for (let i = 1; i <= 6; i++) {
+                const val = Number(r[4 + i] || 0);
+                const isAlert = checkAlert(val, limits.pulpMin, limits.pulpMax);
+                const variedadPulpa = obtenerVariedadPulpa(r, i - 1, detallesRaw);
+
+                if(isAlert) anyPulpAlert = true;
+
+                pulpasHtml += `
+                    <div class="p-dot">
+                        <span class="p-dot-idx">P${i}</span>
+                        <span class="p-dot-val ${isAlert ? 'text-danger' : 'text-success'}">${val.toFixed(1)}</span>
+                        <span class="p-dot-var">${variedadPulpa}</span>
+                    </div>
+                `;
+            }
+
+            const isAmbAlert = checkAlert(tAmb, limits.ambMin, limits.ambMax);
+            const isHumAlert = hum < 85 || hum > 95;
+            const hasAlert = isAmbAlert || isHumAlert || anyPulpAlert;
+
+            return `
+                <div class="cam-card ${hasAlert ? 'alert-active' : ''}">
+                    <div class="cam-card-top">
+                        <div class="cam-card-title-wrap">
+                            <span class="badge bg-primary" style="font-size:0.6rem">CÁMARA ${id}</span>
+                            <span class="card-control-time">
+                                <i class="bi bi-clock"></i> ${horaControl}
+                            </span>
+                        </div>
+
+                        <span class="label-exportadora ${expName === 'SURFRUT' ? 'text-surfrut' : 'text-planta'}" style="font-size:0.55rem">${expName}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-end">
+                        <div>
+                            <div class="card-stat-label">Amb</div>
+                            <div class="card-stat-val ${isAmbAlert ? 'text-danger' : 'text-success'}">${tAmb.toFixed(1)}°</div>
+                        </div>
+
+                        <div class="text-end">
+                            <div class="card-stat-label">Hum</div>
+                            <div class="card-stat-val ${isHumAlert ? 'text-danger' : 'text-main'}" style="font-size:0.95rem">${hum}%</div>
+                        </div>
+                    </div>
+
+                    <div class="card-pulp-grid">${pulpasHtml}</div>
+
+                    <div class="p-idx text-truncate mt-2 text-center" style="color:var(--accent-soft); font-size:0.55rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:3px;">
+                        ${r[2] || 'S/V'}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function manualChange(direction) {
+        currentGroup = (currentGroup + direction + groups.length) % groups.length;
+
+        const latest = {};
+
+        allData.forEach(row => { 
+            latest[row[3]] = row; 
+        });
+
+        renderCards(latest);
+    }
+
+    setInterval(() => { 
+        document.getElementById('reloj').innerText = new Date().toLocaleTimeString(); 
+    }, 1000);
+
+    setInterval(() => {
+        if (monitorToken) syncData();
+    }, 60000);
+    
+    setInterval(() => { 
+        if(!isPaused && allData.length > 0) manualChange(1); 
+    }, 8000);
+
+    window.onload = function() {
+        const fechaInput = document.getElementById("fechaConsulta");
+        if (fechaInput && !fechaInput.value) {
+            fechaInput.value = obtenerFechaHoyISOChile();
+        }
+
+        if (monitorEmail) {
+            document.getElementById("accessEmail").value = monitorEmail;
+        }
+
+        if (monitorEmail && monitorToken) {
+            mostrarApp();
+            syncData();
+        } else {
+            mostrarLogin();
+        }
+    };
+</script>
+
+</body>
+</html>

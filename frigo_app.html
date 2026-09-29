@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Frigorífico Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --bg-body: #f1f5f9;
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        body { 
+            background-color: var(--bg-body); 
+            padding: 10px; 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+        }
+
+        .card { 
+            border-radius: 28px; 
+            box-shadow: var(--card-shadow); 
+            border: none; 
+            max-width: 500px; 
+            margin: auto; 
+            overflow: hidden; 
+            background: #fff; 
+        }
+
+        .header-app { 
+            background: #ffffff; 
+            padding: 20px; 
+            text-align: center; 
+            border-bottom: 1px solid #e2e8f0; 
+        }
+
+        .logo-img { 
+            height: 45px; 
+            margin-bottom: 5px; 
+        }
+        
+        .form-label { 
+            font-size: 0.65rem; 
+            font-weight: 800; 
+            color: #64748b; 
+            text-transform: uppercase; 
+            letter-spacing: 0.8px; 
+            margin-bottom: 8px; 
+            display: block; 
+        }
+
+        .form-control, 
+        .form-select { 
+            border-radius: 14px !important; 
+            font-size: 0.95rem; 
+            padding: 12px; 
+            background-color: #f8fafc; 
+            border: 1px solid #e2e8f0; 
+        }
+
+        .form-control:focus, 
+        .form-select:focus { 
+            background-color: #fff; 
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); 
+            border-color: var(--primary-blue); 
+        }
+
+        .widget-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .widget-box:focus-within { 
+            border-color: var(--primary-blue); 
+            background: #fff; 
+        }
+
+        .widget-input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1e293b;
+            outline: none;
+        }
+
+        .switch-pro {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f1f5f9;
+            padding: 5px 15px;
+            border-radius: 50px;
+            width: fit-content;
+        }
+
+        .form-check-input { 
+            width: 2.6em !important; 
+            height: 1.3em !important; 
+            cursor: pointer; 
+        }
+
+        .label-surfrut { 
+            font-weight: 700; 
+            font-size: 0.75rem; 
+            color: #94a3b8; 
+            text-transform: uppercase; 
+        }
+
+        .check-active { 
+            color: var(--primary-blue) !important; 
+        }
+
+        .pulp-card { 
+            background: #ffffff; 
+            border: 1px solid #f1f5f9; 
+            border-radius: 18px; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02); 
+        }
+
+        .pulp-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #64748b;
+            min-width: 32px;
+        }
+
+        .pulp-variedad-select {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            padding: 8px 10px;
+            border-radius: 12px !important;
+        }
+
+        .obs-select-container { 
+            display: none; 
+            margin-top: 10px; 
+        }
+
+        .capture-container {
+            border: 2px dashed #cbd5e1;
+            padding: 25px;
+            border-radius: 22px;
+            cursor: pointer;
+            text-align: center;
+            background: #f8fafc;
+            transition: 0.3s;
+        }
+
+        .capture-container:hover { 
+            border-color: var(--primary-blue); 
+            background: #eff6ff; 
+        }
+
+        .capture-icon { 
+            font-size: 2rem; 
+            color: var(--primary-blue); 
+            margin-bottom: 5px; 
+            display: block; 
+        }
+
+        .capture-text { 
+            font-size: 0.9rem; 
+            font-weight: 700; 
+            color: #334155; 
+        }
+
+        .btn-save { 
+            padding: 18px; 
+            font-weight: 800; 
+            border-radius: 18px; 
+            background: var(--primary-blue);
+            border: none; 
+            margin-top: 15px;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .badge-variedad { 
+            background: #eff6ff; 
+            color: var(--primary-blue); 
+            padding: 6px 12px; 
+            border-radius: 10px; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            border: 1px solid #bfdbfe; 
+            margin: 3px; 
+            display: inline-flex; 
+            align-items: center; 
+        }
+
+        .ayuda-variedad {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            margin-top: 6px;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-3">
+    <div class="card">
+        <div class="header-app">
+            <img src="logo-icono.png" alt="Logo" class="logo-img">
+            <h6 class="fw-bold mb-0 text-dark">CONTROL DE TEMPERATURA</h6>
+            <span class="text-muted" style="font-size: 0.65rem;">GESTIÓN DE FRIGORÍFICO</span>
+        </div>
+
+        <div class="card-body p-4">
+            <form id="formFrigo">
+                <div class="row g-3 mb-4">
+                    <div class="col-8">
+                        <label class="form-label">OPERADOR</label>
+                        <input type="text" id="operador" class="form-control" placeholder="Nombre completo" required oninput="guardarOperador()">
+                    </div>
+
+                    <div class="col-4">
+                        <label class="form-label">CÁMARA</label>
+                        <select id="camara" class="form-select" required>
+                            <option value="">N°</option>
+                            <script>
+                                for(let i = 2; i <= 12; i++) {
+                                    document.write(`<option value="${i}">${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4 d-flex justify-content-end">
+                    <div class="switch-pro">
+                        <span id="txtSurfrut" class="label-surfrut">SURFRUT</span>
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="checkSurfrut" onchange="updateSwitchStyle()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0">VARIEDADES EN CÁMARA</label>
+                        <button type="button" class="btn btn-link p-0 text-decoration-none fw-bold" style="font-size: 0.7rem;" onclick="agregarVariedad()">+ AÑADIR</button>
+                    </div>
+
+                    <div id="lista-variedades" class="mb-2"></div>
+
+                    <select id="selector-variedad" class="form-select">
+                        <option value="">Seleccionar variedad...</option>
+                        <option value="Galas">Galas</option>
+                        <option value="Granny">Granny</option>
+                        <option value="Fuji">Fuji</option>
+                        <option value="Red Delicius">Red Delicius</option>
+                        <option value="Cripps Pink">Cripps Pink</option>
+                        <option value="Pink Lady">Pink Lady</option>
+                    </select>
+
+                    <div class="ayuda-variedad">
+                        Primero agrega las variedades presentes en la cámara. Luego, en cada pulpa, selecciona cuál variedad fue controlada.
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0 text-danger">LECTURA DE PULPAS (°C)</label>
+                        <span class="text-primary fw-bold" style="font-size: 0.65rem; cursor:pointer;" onclick="gestionarTextos()">NOTAS</span>
+                    </div>
+
+                    <div id="pulpas-contenedor">
+                        <script>
+                            for(let i = 1; i <= 6; i++) {
+                                document.write(`
+                                    <div class="pulp-card">
+                                        <div class="d-flex align-items-center">
+                                            <span class="pulp-title">P${i}</span>
+
+                                            <input 
+                                                type="number" 
+                                                class="form-control border-0 bg-transparent text-center fw-bold fs-5 p-0" 
+                                                step="0.1" 
+                                                placeholder="0.0" 
+                                                id="p${i}" 
+                                                required
+                                            >
+
+                                            <button type="button" class="btn btn-light rounded-circle ms-2" onclick="toggleObs(${i})">
+                                                <i class="bi bi-chat-text"></i>
+                                            </button>
+                                        </div>
+
+                                        <select id="var-p${i}" class="form-select form-select-sm pulp-variedad-select" required>
+                                            <option value="">Variedad controlada...</option>
+                                        </select>
+
+                                        <div id="container-obs-p${i}" class="obs-select-container">
+                                            <select id="obs-p${i}" class="form-select form-select-sm obs-dropdown">
+                                                <option value="">-- Sin nota --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                `);
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <label class="form-label text-center">T° AMBIENTE</label>
+                        <div class="widget-box">
+                            <input type="number" id="tAmbiente" class="widget-input" step="0.1" placeholder="0.0" required>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <label class="form-label text-center">HUMEDAD %</label>
+                        <div class="widget-box">
+                            <input type="number" id="humedad" class="widget-input" placeholder="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <input type="file" id="fotoInput" class="d-none" accept="image/*" capture="environment">
+                    <label for="fotoInput" class="capture-container w-100" id="fileLabel">
+                        <i class="bi bi-camera capture-icon"></i>
+                        <span class="capture-text" id="fileName">CAPTURAR FOTO</span>
+                        <p class="text-muted mb-0" style="font-size: 0.7rem;">REGISTRO VISUAL DE CÁMARA</p>
+                    </label>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">OBSERVACIONES GENERALES</label>
+                    <textarea id="obsGeneral" class="form-control" rows="2" placeholder="Opcional..."></textarea>
+                </div>
+
+                <button type="submit" id="btnEnviar" class="btn btn-primary w-100 btn-save">GUARDAR REGISTRO</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="mensaje" class="alert alert-primary mt-3 d-none text-center fw-bold">✅ ENVIADO EXITOSAMENTE</div>
+</div>
+
+<div class="modal fade" id="modalTextos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-header border-0">
+                <h6 class="modal-title fw-bold">NOTAS PREDETERMINADAS</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="lista-frases-config" class="mb-3"></div>
+
+                <div class="input-group">
+                    <input type="text" id="nueva-frase-input" class="form-control" placeholder="Nueva nota...">
+                    <button class="btn btn-primary" onclick="guardarNuevaFrase()" type="button">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxnVLO6fLBvmtiWCcE6ZZFBy1H3TSxSJA4sxq3HVc3CpZjVnpVcNyJION_U5XPCJhqlJQ/exec";
+
+    let variedadesSeleccionadas = [];
+    let frasesPredeterminadas = ["Fruta ingresada recientemente", "Fruta con T° alta (más de 3 días)"];
+
+    window.onload = function() {
+        const nombreGuardado = localStorage.getItem('nombreOperador');
+        if (nombreGuardado) document.getElementById('operador').value = nombreGuardado;
+
+        const frasesGuardadas = localStorage.getItem('frases_pulpas');
+        if (frasesGuardadas) frasesPredeterminadas = JSON.parse(frasesGuardadas);
+
+        actualizarSelectoresObservacion();
+        actualizarSelectoresPulpas();
+    };
+
+    function updateSwitchStyle() {
+        const check = document.getElementById('checkSurfrut');
+        const txt = document.getElementById('txtSurfrut');
+
+        check.checked ? txt.classList.add('check-active') : txt.classList.remove('check-active');
+    }
+
+    function guardarOperador() { 
+        localStorage.setItem('nombreOperador', document.getElementById('operador').value); 
+    }
+
+    function actualizarSelectoresObservacion() {
+        const dropdowns = document.querySelectorAll('.obs-dropdown');
+
+        dropdowns.forEach(select => {
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Sin nota --</option>';
+
+            frasesPredeterminadas.forEach(frase => {
+                const opt = document.createElement('option');
+                opt.value = frase;
+                opt.textContent = frase;
+                select.appendChild(opt);
+            });
+
+            select.value = currentVal;
+        });
+    }
+
+    function actualizarSelectoresPulpas() {
+        for (let i = 1; i <= 6; i++) {
+            const select = document.getElementById(`var-p${i}`);
+            if (!select) continue;
+
+            const valorActual = select.value;
+
+            select.innerHTML = '<option value="">Variedad controlada...</option>';
+
+            variedadesSeleccionadas.forEach(variedad => {
+                const opt = document.createElement('option');
+                opt.value = variedad;
+                opt.textContent = variedad;
+                select.appendChild(opt);
+            });
+
+            if (variedadesSeleccionadas.includes(valorActual)) {
+                select.value = valorActual;
+            } else if (variedadesSeleccionadas.length === 1) {
+                select.value = variedadesSeleccionadas[0];
+            } else {
+                select.value = "";
+            }
+        }
+    }
+
+    const modalTxt = new bootstrap.Modal(document.getElementById('modalTextos'));
+
+    function gestionarTextos() { 
+        renderListaConfig(); 
+        modalTxt.show(); 
+    }
+
+    function renderListaConfig() {
+        const cont = document.getElementById('lista-frases-config');
+
+        cont.innerHTML = frasesPredeterminadas.map((f, i) => `
+            <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                <small>${f}</small>
+                <i class="bi bi-trash text-danger cursor-pointer" onclick="eliminarFrase(${i})"></i>
+            </div>
+        `).join('');
+    }
+
+    function guardarNuevaFrase() {
+        const input = document.getElementById('nueva-frase-input');
+
+        if (input.value.trim()) {
+            frasesPredeterminadas.push(input.value.trim());
+            localStorage.setItem('frases_pulpas', JSON.stringify(frasesPredeterminadas));
+            input.value = "";
+            renderListaConfig();
+            actualizarSelectoresObservacion();
+        }
+    }
+
+    function eliminarFrase(index) {
+        if(confirm("¿Eliminar?")) {
+            frasesPredeterminadas.splice(index, 1);
+            localStorage.setItem('frases_pulpas', JSON.stringify(frasesPredeterminadas));
+            renderListaConfig();
+            actualizarSelectoresObservacion();
+        }
+    }
+
+    function toggleObs(id) {
+        const el = document.getElementById(`container-obs-p${id}`);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function agregarVariedad() {
+        const sel = document.getElementById('selector-variedad');
+
+        if (sel.value && !variedadesSeleccionadas.includes(sel.value)) {
+            variedadesSeleccionadas.push(sel.value);
+            renderVariedades();
+            actualizarSelectoresPulpas();
+        }
+
+        sel.value = "";
+    }
+
+    function eliminarVariedad(v) {
+        variedadesSeleccionadas = variedadesSeleccionadas.filter(item => item !== v);
+        renderVariedades();
+        actualizarSelectoresPulpas();
+    }
+
+    function renderVariedades() {
+        const cont = document.getElementById('lista-variedades');
+
+        cont.innerHTML = variedadesSeleccionadas.map(v => `
+            <span class="badge-variedad">
+                ${v} 
+                <i class="bi bi-x ms-2" style="cursor:pointer" onclick="eliminarVariedad('${v}')"></i>
+            </span>
+        `).join('');
+    }
+
+    document.getElementById('formFrigo').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (variedadesSeleccionadas.length === 0) { 
+            alert("Agrega al menos una variedad en cámara"); 
+            return; 
+        }
+
+        let detalleNotas = [];
+        let pulpasVariedades = [];
+
+        for(let i = 1; i <= 6; i++) {
+            const val = document.getElementById(`p${i}`).value;
+            const variedadPulpa = document.getElementById(`var-p${i}`).value;
+            const obs = document.getElementById(`obs-p${i}`).value;
+
+            if (!variedadPulpa) {
+                alert(`Selecciona la variedad controlada en P${i}`);
+                return;
+            }
+
+            pulpasVariedades.push(variedadPulpa);
+
+            detalleNotas.push(
+                `P${i}: ${variedadPulpa} | ${val}°${obs ? ' (' + obs + ')' : ''}`
+            );
+        }
+
+        const btn = document.getElementById('btnEnviar');
+        btn.disabled = true;
+        btn.innerText = "PROCESANDO...";
+
+        const enviar = (base64) => {
+            const expValue = document.getElementById('checkSurfrut').checked ? "SURFRUT" : "PLANTA";
+
+            const datos = {
+                origen: "frigorifico",
+                operador: document.getElementById('operador').value.trim(),
+                variedad: variedadesSeleccionadas.join(', '),
+                camara: document.getElementById('camara').value,
+                tAmbiente: document.getElementById('tAmbiente').value,
+
+                p1: document.getElementById('p1').value,
+                p2: document.getElementById('p2').value,
+                p3: document.getElementById('p3').value,
+                p4: document.getElementById('p4').value,
+                p5: document.getElementById('p5').value,
+                p6: document.getElementById('p6').value,
+
+                p1Variedad: document.getElementById('var-p1').value,
+                p2Variedad: document.getElementById('var-p2').value,
+                p3Variedad: document.getElementById('var-p3').value,
+                p4Variedad: document.getElementById('var-p4').value,
+                p5Variedad: document.getElementById('var-p5').value,
+                p6Variedad: document.getElementById('var-p6').value,
+
+                humedad: document.getElementById('humedad').value,
+                obsGeneral: document.getElementById('obsGeneral').value.trim(),
+                pulpasDetalle: detalleNotas.join(' | '),
+                pulpasVariedades: pulpasVariedades.join(' | '),
+                exportadora: String(expValue),
+                foto: base64
+            };
+
+            fetch(WEB_APP_URL, { 
+                method: 'POST', 
+                body: JSON.stringify(datos) 
+            })
+            .then(() => {
+                document.getElementById('mensaje').classList.remove('d-none');
+                setTimeout(() => location.reload(), 2000);
+            })
+            .catch(err => { 
+                console.error(err);
+                alert("Error de conexión"); 
+                btn.disabled = false; 
+                btn.innerText = "GUARDAR REGISTRO"; 
+            });
+        };
+
+        const file = document.getElementById('fotoInput').files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => enviar(reader.result);
+            reader.readAsDataURL(file);
+        } else { 
+            enviar(null); 
+        }
+    });
+
+    document.getElementById('fotoInput').onchange = function() {
+        if(this.files[0]) {
+            document.getElementById('fileName').innerText = "FOTO CARGADA";
+            document.getElementById('fileLabel').style.borderColor = "#22c55e";
+            document.getElementById('fileLabel').style.background = "#f0fdf4";
+        }
+    };
+</script>
+
+</body>
+</html>
