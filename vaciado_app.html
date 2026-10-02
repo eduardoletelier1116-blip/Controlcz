@@ -1,521 +1,233 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Estanques</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Estanques</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
-    <style>
-        body { 
-            background-color: #f0f2f5; 
-            padding: 15px; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .card { 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
-            border: none; 
-            max-width: 480px; 
-            margin: auto; 
-            overflow: hidden;
-        }
-
-        .header-accent {
-            background: #ffffff;
-            padding: 25px;
-            text-align: center;
-            border-bottom: 4px solid #198754;
-        }
-
-        .logo-img { 
-            height: 60px; 
-            width: auto; 
-            margin-bottom: 10px; 
-        }
-        
-        .form-label { 
-            font-size: 0.75rem; 
-            color: #555; 
-            margin-bottom: 4px; 
-        }
-        
-        .input-group-text { 
-            background-color: #fff; 
-            border-right: none; 
-            color: #198754; 
-        }
-
-        .form-control { 
-            border-left: none; 
-            padding: 12px; 
-            font-size: 1rem; 
-        }
-
-        .form-control:focus { 
-            box-shadow: none; 
-            border-color: #ced4da; 
-        }
-        
-        .input-group:focus-within {
-            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.1);
-            border-radius: 0.375rem;
-        }
-
-        .switch-container {
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px dashed #dee2e6;
-        }
-
-        .btn-save {
-            padding: 15px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            border-radius: 12px;
-            transition: all 0.3s;
-        }
-
-        .btn-save:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3); 
-        }
-
-        .file-label {
-            display: block;
-            background: #e9ecef;
-            border: 2px dashed #ced4da;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .file-label:hover { 
-            background: #dee2e6; 
-        }
-
-        .mode-selector {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #e9ecef;
-        }
-
-        .mode-btn {
-            width: 100%;
-            border-radius: 12px;
-            font-weight: 800;
-            padding: 12px 8px;
-            font-size: 0.78rem;
-            text-transform: uppercase;
-        }
-
-        .mode-btn.active {
-            color: white !important;
-        }
-
-        .mode-btn-vaciado.active {
-            background: #198754 !important;
-            border-color: #198754 !important;
-        }
-
-        .mode-btn-linea2.active {
-            background: #fd7e14 !important;
-            border-color: #fd7e14 !important;
-        }
-
-        .section-title {
-            font-size: 0.78rem;
-            font-weight: 800;
-            color: #198754;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .horno-box {
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 18px;
-        }
-
-        .horno-box .input-group-text {
-            color: #fd7e14;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
+<style>
+body{background:#f0f2f5;padding:15px;font-family:'Segoe UI',sans-serif}
+.card{max-width:480px;margin:auto;border:0;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
+.header{text-align:center;padding:25px;border-bottom:4px solid #198754}
+.logo{height:60px}
+.mode-btn{font-weight:800;border-radius:12px;padding:12px 5px;font-size:.75rem}
+.mode-btn.active{background:#198754;color:#fff}
+.form-control{padding:12px}
+.section-title{font-weight:800;color:#198754;border-bottom:1px solid #ddd;padding-bottom:6px;margin:18px 0 12px}
+.file-label{display:block;text-align:center;border:2px dashed #ccc;border-radius:12px;padding:15px;cursor:pointer}
+</style>
 </head>
 
 <body>
 
 <div class="container py-4">
-    <div class="card">
-        <div class="header-accent">
-            <img src="logo-icono.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-            <h4 class="fw-extrabold mb-0" style="color: #333;">CONTROL DE ESTANQUES</h4>
-            <p class="text-muted small mb-0">Industrialización de Fruta</p>
-        </div>
+<div class="card">
 
-        <div class="card-body p-4">
-            <form id="formControl">
-
-                <div class="mode-selector">
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <button type="button" id="btnModoVaciado Línea 1" class="btn btn-outline-success mode-btn mode-btn-vaciado active" onclick="cambiarModo('vaciado')">
-                                <i class="bi bi-droplet-half d-block fs-5"></i>
-                                Vaciado
-                            </button>
-                        </div>
-
-                        <div class="col-6">
-                            <button type="button" id="btnModoVaciado Línea 2" class="btn btn-outline-warning mode-btn mode-btn-linea2" onclick="cambiarModo('horno')">
-                                <i class="bi bi-thermometer-high d-block fs-5"></i>
-                                Horno
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    
-                    <div class="mb-3">
-                        <label class="form-label fw-bold uppercase">EXPORTADORA</label>
-                        <input type="text" id="exportadora" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold uppercase">PRODUCTOR</label>
-                        <input type="text" id="productor" class="form-control" required>
-                    </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-6">
-                            <label class="form-label fw-bold">LOTE</label>
-                            <input type="text" id="lote" class="form-control" required>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label fw-bold">VARIEDAD</label>
-                            <input type="text" id="variedad" class="form-control" required>
-                        </div>
-                    </div>
-<label class="form-label fw-bold uppercase">OPERADOR RESPONSABLE</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                        <input type="text" id="operador" class="form-control" placeholder="Nombre completo" required>
-                    </div>
-                </div>
-
-                <div id="seccionVaciado">
-                    <div class="section-title">
-                        <i class="bi bi-clipboard-check me-1"></i> Control de Vaciado
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-6">
-                            <label class="form-label fw-bold">PPM</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-droplet"></i></span>
-                                <input type="number" id="ppm" class="form-control campo-vaciado" step="0.1" placeholder="0.0">
-                            </div>
-                        </div>
-
-                        <div class="col-6">
-                            <label class="form-label fw-bold">ORP</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-lightning"></i></span>
-                                <input type="number" id="orp" class="form-control campo-vaciado" placeholder="0">
-                            </div>
-                        </div>
-
-                        <div class="col-6">
-                            <label class="form-label fw-bold">PH</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-water"></i></span>
-                                <input type="number" id="ph" class="form-control campo-vaciado" step="0.1" placeholder="0.0">
-                            </div>
-                        </div>
-
-                        <div class="col-6">
-                            <label class="form-label fw-bold">KILOS</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
-                                <input type="number" id="kilos" class="form-control campo-vaciado" placeholder="0">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="switch-container d-flex justify-content-between align-items-center">
-                        <label class="fw-bold mb-0" for="esCorreccion">
-                            <i class="bi bi-gear-fill me-2"></i>¿ES CORRECCIÓN?
-                        </label>
-
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="esCorreccion" style="width: 2.5em; height: 1.25em;">
-                        </div>
-                    </div>
-                </div>
-
-                <div id="seccionLinea2" class="hidden">
-                    <div class="section-title" style="color:#fd7e14;">
-                        <i class="bi bi-thermometer-high me-1"></i> Control Hidrocooler
-                    </div>
-
-                    <div class="horno-box">
-                        <label class="form-label fw-bold">CONTROL HIDROCOOLER</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-thermometer-half"></i></span>
-                            <input type="number" id="temperaturaHorno" class="form-control campo-horno" step="0.1" placeholder="Ej: 85.5">
-                            <span class="input-group-text" style="border-left:none;">°C</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label fw-bold">FOTO DE RESPALDO (Obligatoria)</label>
-                    <input type="file" id="fotoInput" class="form-control d-none" accept="image/*" capture="environment">
-                    <label for="fotoInput" class="file-label" id="fileLabel">
-                        <i class="bi bi-camera-fill fs-3 d-block text-success"></i>
-                        <span id="fileName">Tocar para tomar foto</span>
-                    </label>
-                </div>
-
-                <button type="submit" id="btnEnviar" class="btn btn-success w-100 btn-save shadow-sm">
-                    <i class="bi bi-cloud-upload me-2"></i>GUARDAR REGISTRO
-                </button>
-            </form>
-        </div>
-    </div>
-    
-    <div id="mensaje" class="alert alert-success mt-3 d-none text-center fw-bold">
-        ✅ REGISTRO PROCESADO CON ÉXITO
-    </div>
-
-    <div id="mensajeError" class="alert alert-danger mt-3 d-none text-center fw-bold"></div>
+<div class="header">
+<img src="logo-icono.png" class="logo" onerror="this.style.display='none'">
+<h4 class="fw-bold">CONTROL DE ESTANQUES</h4>
+<p class="text-muted mb-0">Industrialización de Fruta</p>
 </div>
 
+<div class="card-body p-4">
+
+<div class="row g-2 mb-3">
+<div class="col-4">
+<button type="button" class="btn btn-outline-success w-100 mode-btn active" onclick="cambiarTipo('vaciado_linea_1',this)">
+<i class="bi bi-droplet d-block"></i>Línea 1
+</button>
+</div>
+
+<div class="col-4">
+<button type="button" class="btn btn-outline-success w-100 mode-btn" onclick="cambiarTipo('vaciado_linea_2',this)">
+<i class="bi bi-droplet d-block"></i>Línea 2
+</button>
+</div>
+
+<div class="col-4">
+<button type="button" class="btn btn-outline-info w-100 mode-btn" onclick="cambiarTipo('hidrocooler',this)">
+<i class="bi bi-water d-block"></i>Hidro
+</button>
+</div>
+</div>
+
+
+<form id="formControl">
+
+<div class="section-title">Datos del proceso</div>
+
+<input id="exportadora" class="form-control mb-2" placeholder="Exportadora" required>
+
+<input id="productor" class="form-control mb-2" placeholder="Productor" required>
+
+<div class="row g-2">
+<div class="col-6">
+<input id="lote" class="form-control" placeholder="Lote" required>
+</div>
+<div class="col-6">
+<input id="variedad" class="form-control" placeholder="Variedad" required>
+</div>
+</div>
+
+<input id="operador" class="form-control mt-2 mb-3" placeholder="Operador responsable" required>
+
+
+<div class="section-title">Control de estanque</div>
+
+<div class="row g-3">
+
+<div class="col-6">
+<label class="form-label fw-bold">PPM</label>
+<input id="ppm" type="number" step="0.1" class="form-control">
+</div>
+
+<div class="col-6">
+<label class="form-label fw-bold">ORP</label>
+<input id="orp" type="number" class="form-control">
+</div>
+
+<div class="col-6">
+<label class="form-label fw-bold">PH</label>
+<input id="ph" type="number" step="0.1" class="form-control">
+</div>
+
+<div class="col-6" id="bloqueKilos">
+<label class="form-label fw-bold">Kilos</label>
+<input id="kilos" type="number" class="form-control">
+</div>
+
+</div>
+
+
+<div class="form-check form-switch my-4">
+<input id="correccion" class="form-check-input" type="checkbox">
+<label class="form-check-label fw-bold">¿Es corrección?</label>
+</div>
+
+
+<label class="fw-bold">FOTO DE RESPALDO (OBLIGATORIA)</label>
+
+<input id="foto" type="file" accept="image/*" capture="environment" hidden>
+
+<label for="foto" class="file-label">
+<i class="bi bi-camera-fill fs-3"></i>
+<br>
+<span id="fotoTexto">Tomar fotografía</span>
+</label>
+
+
+<button id="btnEnviar" class="btn btn-success w-100 mt-4 p-3 fw-bold">
+<i class="bi bi-cloud-upload"></i> GUARDAR REGISTRO
+</button>
+
+</form>
+
+<div id="mensaje" class="alert alert-success mt-3 d-none text-center fw-bold">
+Registro enviado correctamente
+</div>
+
+<div id="error" class="alert alert-danger mt-3 d-none"></div>
+
+</div>
+</div>
+</div>
+
+
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxnVLO6fLBvmtiWCcE6ZZFBy1H3TSxSJA4sxq3HVc3CpZjVnpVcNyJION_U5XPCJhqlJQ/exec";
 
-    let modoActual = "vaciado";
+const WEB_APP_URL="https://script.google.com/macros/s/AKfycbxnVLO6fLBvmtiWCcE6ZZFBy1H3TSxSJA4sxq3HVc3CpZjVnpVcNyJION_U5XPCJhqlJQ/exec";
 
-    function cambiarModo(modo) {
-        modoActual = modo;
+let tipoActual="vaciado_linea_1";
 
-        const btnVaciado = document.getElementById("btnModoVaciado");
-        const btnHorno = document.getElementById("btnModoLinea2");
-        const seccionVaciado = document.getElementById("seccionVaciado");
-        const seccionLinea2 = document.getElementById("seccionLinea2");
-        const btnEnviar = document.getElementById("btnEnviar");
 
-        if (modo === "vaciado") {
-            btnVaciado.classList.add("active");
-            btnHorno.classList.remove("active");
+function cambiarTipo(tipo,btn){
 
-            seccionVaciado.classList.remove("hidden");
-            seccionLinea2.classList.add("hidden");
+tipoActual=tipo;
 
-            btnEnviar.className = "btn btn-success w-100 btn-save shadow-sm";
-            btnEnviar.innerHTML = '<i class="bi bi-cloud-upload me-2"></i>GUARDAR REGISTRO';
+document.querySelectorAll(".mode-btn")
+.forEach(x=>x.classList.remove("active"));
 
-        } else {
-            btnHorno.classList.add("active");
-            btnVaciado.classList.remove("active");
+btn.classList.add("active");
 
-            seccionLinea2.classList.remove("hidden");
-            seccionVaciado.classList.add("hidden");
+document.getElementById("bloqueKilos").style.display=
+tipo==="hidrocooler"?"none":"block";
 
-            btnEnviar.className = "btn btn-warning w-100 btn-save shadow-sm text-white";
-            btnEnviar.innerHTML = '<i class="bi bi-thermometer-high me-2"></i>GUARDAR TEMPERATURA';
-        }
+}
 
-        ocultarMensajes();
-    }
 
-    document.getElementById('fotoInput').addEventListener('change', function(e) {
-        if (e.target.files[0]) {
-            document.getElementById('fileName').innerText = "✅ Foto cargada";
-            document.getElementById('fileLabel').style.borderColor = "#198754";
-        } else {
-            document.getElementById('fileName').innerText = "Tocar para tomar foto";
-            document.getElementById('fileLabel').style.borderColor = "#ced4da";
-        }
-    });
+foto.addEventListener("change",()=>{
 
-    document.getElementById('formControl').addEventListener('submit', function(e) {
-        e.preventDefault();
+fotoTexto.innerHTML="✅ Foto capturada";
 
-        ocultarMensajes();
+});
 
-        const btn = document.getElementById('btnEnviar');
-        const fotoFile = document.getElementById('fotoInput').files[0];
 
-        if (!validarFormulario()) {
-            return;
-        }
+formControl.addEventListener("submit",e=>{
 
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> SUBIENDO...';
+e.preventDefault();
 
-        if (fotoFile) {
-            const reader = new FileReader();
-            reader.onloadend = () => enviarDatos(reader.result);
-            reader.readAsDataURL(fotoFile);
-        } else {
-            mostrarError("Debes tomar una foto de respaldo.");
-            btn.disabled = false;
-            restaurarBoton();
-        }
-    });
+error.classList.add("d-none");
 
-    function validarFormulario() {
-        const operador = document.getElementById('operador').value.trim();
-        const fotoFile = document.getElementById('fotoInput').files[0];
+if(!foto.files[0]){
+error.innerHTML="Debe tomar fotografía de respaldo";
+error.classList.remove("d-none");
+return;
+}
 
-        if (!operador) {
-            mostrarError("Debes ingresar el nombre del operador.");
-            return false;
-        }
 
-        if (!fotoFile) {
-            mostrarError("Debes tomar una foto de respaldo.");
-            return false;
-        }
+let reader=new FileReader();
 
-        if (modoActual === "vaciado") {
-            const ppm = document.getElementById('ppm').value;
-            const orp = document.getElementById('orp').value;
-            const ph = document.getElementById('ph').value;
-            const kilos = document.getElementById('kilos').value;
+reader.onload=()=>{
 
-            if (ppm === "" || orp === "" || ph === "" || kilos === "") {
-                mostrarError("Completa PPM, ORP, pH y kilos.");
-                return false;
-            }
-        }
 
-        if (modoActual === "horno") {
-            const temperaturaHorno = document.getElementById('temperaturaHorno').value;
+let datos={
 
-            if (temperaturaHorno === "") {
-                mostrarError("Debes ingresar la temperatura del horno.");
-                return false;
-            }
-        }
+origen:tipoActual,
 
-        return true;
-    }
+exportadora:exportadora.value,
+productor:productor.value,
+lote:lote.value,
+variedad:variedad.value,
 
-    function enviarDatos(fotoBase64) {
-        let datos = {};
+operador:operador.value,
 
-        if (modoActual === "vaciado") {
-            datos = {
-                origen: "vaciado",
-                operador: document.getElementById('operador').value.trim(),
-                ppm: parseFloat(document.getElementById('ppm').value),
-                orp: parseInt(document.getElementById('orp').value),
-                ph: parseFloat(document.getElementById('ph').value),
-                kilos: parseInt(document.getElementById('kilos').value),
-                correccion: document.getElementById('esCorreccion').checked,
-                foto: fotoBase64
-            };
-        }
+ppm:Number(ppm.value),
+orp:Number(orp.value),
+ph:Number(ph.value),
 
-        if (modoActual === "horno") {
-            datos = {
-                origen: "horno",
-                operador: document.getElementById('operador').value.trim(),
-                temperaturaHorno: parseFloat(document.getElementById('temperaturaHorno').value),
-                foto: fotoBase64
-            };
-        }
+kilos:tipoActual==="hidrocooler"?null:Number(kilos.value),
 
-        fetch(WEB_APP_URL, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            body: JSON.stringify(datos) 
-        })
-        .then(() => {
-            mostrarExito();
-            limpiarFormulario();
-        })
-        .catch(err => {
-            mostrarError("Error al enviar: " + err);
-        })
-        .finally(() => {
-            const btn = document.getElementById('btnEnviar');
-            btn.disabled = false;
-            restaurarBoton();
-        });
-    }
+correccion:correccion.checked,
 
-    function mostrarExito() {
-        const msj = document.getElementById('mensaje');
+foto:reader.result
 
-        if (modoActual === "horno") {
-            msj.innerText = "✅ TEMPERATURA DE HORNO REGISTRADA CON ÉXITO";
-        } else {
-            msj.innerText = "✅ REGISTRO PROCESADO CON ÉXITO";
-        }
+};
 
-        msj.classList.remove('d-none');
 
-        setTimeout(() => { 
-            msj.classList.add('d-none'); 
-        }, 3000);
-    }
+btnEnviar.disabled=true;
 
-    function mostrarError(texto) {
-        const msj = document.getElementById('mensajeError');
-        msj.innerText = "⚠️ " + texto;
-        msj.classList.remove('d-none');
-    }
+fetch(WEB_APP_URL,{
+method:"POST",
+mode:"no-cors",
+body:JSON.stringify(datos)
+})
+.then(()=>{
 
-    function ocultarMensajes() {
-        document.getElementById('mensaje').classList.add('d-none');
-        document.getElementById('mensajeError').classList.add('d-none');
-    }
+mensaje.classList.remove("d-none");
 
-    function limpiarFormulario() {
-        const operadorActual = document.getElementById('operador').value;
+btnEnviar.disabled=false;
 
-        document.getElementById('formControl').reset();
+});
 
-        // Conserva operador para acelerar registros consecutivos
-        document.getElementById('operador').value = operadorActual;
+};
 
-        document.getElementById('fileName').innerText = "Tocar para tomar foto";
-        document.getElementById('fileLabel').style.borderColor = "#ced4da";
 
-        cambiarModo(modoActual);
-    }
+reader.readAsDataURL(foto.files[0]);
 
-    function restaurarBoton() {
-        const btn = document.getElementById('btnEnviar');
+});
 
-        if (modoActual === "horno") {
-            btn.className = "btn btn-warning w-100 btn-save shadow-sm text-white";
-            btn.innerHTML = '<i class="bi bi-thermometer-high me-2"></i>GUARDAR TEMPERATURA';
-        } else {
-            btn.className = "btn btn-success w-100 btn-save shadow-sm";
-            btn.innerHTML = '<i class="bi bi-cloud-upload me-2"></i>GUARDAR REGISTRO';
-        }
-    }
-
-    cambiarModo("vaciado");
 </script>
 
 </body>
