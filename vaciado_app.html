@@ -127,7 +127,7 @@
             border-color: #198754 !important;
         }
 
-        .mode-btn-horno.active {
+        .mode-btn-linea2.active {
             background: #fd7e14 !important;
             border-color: #fd7e14 !important;
         }
@@ -183,7 +183,7 @@
                         </div>
 
                         <div class="col-6">
-                            <button type="button" id="btnModoVaciado Línea 2" class="btn btn-outline-warning mode-btn mode-btn-horno" onclick="cambiarModo('horno')">
+                            <button type="button" id="btnModoVaciado Línea 2" class="btn btn-outline-warning mode-btn mode-btn-linea2" onclick="cambiarModo('horno')">
                                 <i class="bi bi-thermometer-high d-block fs-5"></i>
                                 Horno
                             </button>
@@ -192,7 +192,26 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold uppercase">OPERADOR RESPONSABLE</label>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold uppercase">EXPORTADORA</label>
+                        <input type="text" id="exportadora" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold uppercase">PRODUCTOR</label>
+                        <input type="text" id="productor" class="form-control" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold">LOTE</label>
+                            <input type="text" id="lote" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold">VARIEDAD</label>
+                            <input type="text" id="variedad" class="form-control" required>
+                        </div>
+                    </div>
+<label class="form-label fw-bold uppercase">OPERADOR RESPONSABLE</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
                         <input type="text" id="operador" class="form-control" placeholder="Nombre completo" required>
@@ -249,13 +268,13 @@
                     </div>
                 </div>
 
-                <div id="seccionHorno" class="hidden">
+                <div id="seccionLinea2" class="hidden">
                     <div class="section-title" style="color:#fd7e14;">
-                        <i class="bi bi-thermometer-high me-1"></i> Control de Estanque
+                        <i class="bi bi-thermometer-high me-1"></i> Control Hidrocooler
                     </div>
 
                     <div class="horno-box">
-                        <label class="form-label fw-bold">TEMPERATURA HORNO</label>
+                        <label class="form-label fw-bold">CONTROL HIDROCOOLER</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-thermometer-half"></i></span>
                             <input type="number" id="temperaturaHorno" class="form-control campo-horno" step="0.1" placeholder="Ej: 85.5">
@@ -296,9 +315,9 @@
         modoActual = modo;
 
         const btnVaciado = document.getElementById("btnModoVaciado");
-        const btnHorno = document.getElementById("btnModoHorno");
+        const btnHorno = document.getElementById("btnModoLinea2");
         const seccionVaciado = document.getElementById("seccionVaciado");
-        const seccionHorno = document.getElementById("seccionHorno");
+        const seccionLinea2 = document.getElementById("seccionLinea2");
         const btnEnviar = document.getElementById("btnEnviar");
 
         if (modo === "vaciado") {
@@ -306,7 +325,7 @@
             btnHorno.classList.remove("active");
 
             seccionVaciado.classList.remove("hidden");
-            seccionHorno.classList.add("hidden");
+            seccionLinea2.classList.add("hidden");
 
             btnEnviar.className = "btn btn-success w-100 btn-save shadow-sm";
             btnEnviar.innerHTML = '<i class="bi bi-cloud-upload me-2"></i>GUARDAR REGISTRO';
@@ -315,7 +334,7 @@
             btnHorno.classList.add("active");
             btnVaciado.classList.remove("active");
 
-            seccionHorno.classList.remove("hidden");
+            seccionLinea2.classList.remove("hidden");
             seccionVaciado.classList.add("hidden");
 
             btnEnviar.className = "btn btn-warning w-100 btn-save shadow-sm text-white";
