@@ -1,234 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Control de Estanques</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
-<style>
-body{background:#f0f2f5;padding:15px;font-family:'Segoe UI',sans-serif}
-.card{max-width:480px;margin:auto;border:0;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
-.header{text-align:center;padding:25px;border-bottom:4px solid #198754}
-.logo{height:60px}
-.mode-btn{font-weight:800;border-radius:12px;padding:12px 5px;font-size:.75rem}
-.mode-btn.active{background:#198754;color:#fff}
-.form-control{padding:12px}
-.section-title{font-weight:800;color:#198754;border-bottom:1px solid #ddd;padding-bottom:6px;margin:18px 0 12px}
-.file-label{display:block;text-align:center;border:2px dashed #ccc;border-radius:12px;padding:15px;cursor:pointer}
-</style>
-</head>
-
-<body>
-
-<div class="container py-4">
-<div class="card">
-
-<div class="header">
-<img src="logo-icono.png" class="logo" onerror="this.style.display='none'">
-<h4 class="fw-bold">CONTROL DE ESTANQUES</h4>
-<p class="text-muted mb-0">Industrialización de Fruta</p>
-</div>
-
-<div class="card-body p-4">
-
-<div class="row g-2 mb-3">
-<div class="col-4">
-<button type="button" class="btn btn-outline-success w-100 mode-btn active" onclick="cambiarTipo('vaciado_linea_1',this)">
-<i class="bi bi-droplet d-block"></i>Línea 1
-</button>
-</div>
-
-<div class="col-4">
-<button type="button" class="btn btn-outline-success w-100 mode-btn" onclick="cambiarTipo('vaciado_linea_2',this)">
-<i class="bi bi-droplet d-block"></i>Línea 2
-</button>
-</div>
-
-<div class="col-4">
-<button type="button" class="btn btn-outline-info w-100 mode-btn" onclick="cambiarTipo('hidrocooler',this)">
-<i class="bi bi-water d-block"></i>Hidro
-</button>
-</div>
-</div>
-
-
-<form id="formControl">
-
-<div class="section-title">Datos del proceso</div>
-
-<input id="exportadora" class="form-control mb-2" placeholder="Exportadora" required>
-
-<input id="productor" class="form-control mb-2" placeholder="Productor" required>
-
-<div class="row g-2">
-<div class="col-6">
-<input id="lote" class="form-control" placeholder="Lote" required>
-</div>
-<div class="col-6">
-<input id="variedad" class="form-control" placeholder="Variedad" required>
-</div>
-</div>
-
-<input id="operador" class="form-control mt-2 mb-3" placeholder="Operador responsable" required>
-
-
-<div class="section-title">Control de estanque</div>
-
-<div class="row g-3">
-
-<div class="col-6">
-<label class="form-label fw-bold">PPM</label>
-<input id="ppm" type="number" step="0.1" class="form-control">
-</div>
-
-<div class="col-6">
-<label class="form-label fw-bold">ORP</label>
-<input id="orp" type="number" class="form-control">
-</div>
-
-<div class="col-6">
-<label class="form-label fw-bold">PH</label>
-<input id="ph" type="number" step="0.1" class="form-control">
-</div>
-
-<div class="col-6" id="bloqueKilos">
-<label class="form-label fw-bold">Kilos</label>
-<input id="kilos" type="number" class="form-control">
-</div>
-
-</div>
-
-
-<div class="form-check form-switch my-4">
-<input id="correccion" class="form-check-input" type="checkbox">
-<label class="form-check-label fw-bold">¿Es corrección?</label>
-</div>
-
-
-<label class="fw-bold">FOTO DE RESPALDO (OBLIGATORIA)</label>
-
-<input id="foto" type="file" accept="image/*" capture="environment" hidden>
-
-<label for="foto" class="file-label">
-<i class="bi bi-camera-fill fs-3"></i>
-<br>
-<span id="fotoTexto">Tomar fotografía</span>
-</label>
-
-
-<button id="btnEnviar" class="btn btn-success w-100 mt-4 p-3 fw-bold">
-<i class="bi bi-cloud-upload"></i> GUARDAR REGISTRO
-</button>
-
-</form>
-
-<div id="mensaje" class="alert alert-success mt-3 d-none text-center fw-bold">
-Registro enviado correctamente
-</div>
-
-<div id="error" class="alert alert-danger mt-3 d-none"></div>
-
-</div>
-</div>
-</div>
-
-
-<script>
-
-const WEB_APP_URL="https://script.google.com/macros/s/AKfycbyd1Y3m9Jwwj3K_DKtogIZliBw7Y-sP_0mWrq5R97e9PhlSjpJRDXRxfv3x86EN0cnm7w/exec";
-
-let tipoActual="vaciado_linea_1";
-
-
-function cambiarTipo(tipo,btn){
-
-tipoActual=tipo;
-
-document.querySelectorAll(".mode-btn")
-.forEach(x=>x.classList.remove("active"));
-
-btn.classList.add("active");
-
-document.getElementById("bloqueKilos").style.display=
-tipo==="hidrocooler"?"none":"block";
-
-}
-
-
-foto.addEventListener("change",()=>{
-
-fotoTexto.innerHTML="✅ Foto capturada";
-
-});
-
-
-formControl.addEventListener("submit",e=>{
-
-e.preventDefault();
-
-error.classList.add("d-none");
-
-if(!foto.files[0]){
-error.innerHTML="Debe tomar fotografía de respaldo";
-error.classList.remove("d-none");
-return;
-}
-
-
-let reader=new FileReader();
-
-reader.onload=()=>{
-
-
-let datos={
-
-origen:tipoActual,
-
-exportadora:exportadora.value,
-productor:productor.value,
-lote:lote.value,
-variedad:variedad.value,
-
-operador:operador.value,
-
-ppm:Number(ppm.value),
-orp:Number(orp.value),
-ph:Number(ph.value),
-
-kilos:tipoActual==="hidrocooler"?null:Number(kilos.value),
-
-correccion:correccion.checked,
-
-foto:reader.result
-
-};
-
-
-btnEnviar.disabled=true;
-
-fetch(WEB_APP_URL,{
-method:"POST",
-mode:"no-cors",
-body:JSON.stringify(datos)
-})
-.then(()=>{
-
-mensaje.classList.remove("d-none");
-
-btnEnviar.disabled=false;
-
-});
-
-};
-
-
-reader.readAsDataURL(foto.files[0]);
-
-});
-
-</script>
-
-</body>
-</html>
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Control de estanques</title><style>*{box-sizing:border-box}body{background:#eef3f5;font:16px system-ui;color:#19384a;padding:18px}.card{max-width:480px;margin:auto;padding:25px;background:white;border-radius:20px}h1{font-size:24px;text-align:center}.modes{display:flex;gap:8px;margin:20px 0}button{cursor:pointer;padding:12px;border:1px solid #b4d7c8;border-radius:9px;background:white;font:inherit}.modes button{flex:1;font-size:13px}.active,#btnEnviar{background:#198754;color:white}label{display:block;margin:12px 0;font-weight:600}input{display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #ccd8de;border-radius:8px;font:inherit}input[type=checkbox]{display:inline;width:auto}.nums{display:grid;grid-template-columns:1fr 1fr;gap:12px}#btnEnviar{width:100%;margin-top:15px}.d-none{display:none}#error{color:#a52639}#mensaje{color:#137550}button:disabled{opacity:.6}</style><div class="card"><h1>CONTROL DE ESTANQUES</h1><p style="text-align:center">Industrialización de Fruta</p><div class="modes"><button class="mode-btn active" onclick="cambiarTipo('vaciado_linea_1',this)">Línea 1</button><button class="mode-btn" onclick="cambiarTipo('vaciado_linea_2',this)">Línea 2</button><button class="mode-btn" onclick="cambiarTipo('hidrocooler',this)">Hidro</button></div><form id="formControl"><label>Exportadora<input id="exportadora" required placeholder="Exportadora"></label><label>Productor<input id="productor" required placeholder="Productor"></label><label>Lote<input id="lote" required placeholder="Lote"></label><label>Variedad<input id="variedad" required placeholder="Variedad"></label><label>Operador responsable<input id="operador" required placeholder="Operador responsable"></label><div class="nums"><label>PPM<input id="ppm" type="number" step="0.1" required></label><label>ORP<input id="orp" type="number" step="1" required></label><label>pH<input id="ph" type="number" step="0.1" required></label><label id="bloqueKilos">Kilos<input id="kilos" type="number" step="0.1"></label></div><label><input id="correccion" type="checkbox"> ¿Es corrección?</label><label>Fotografía obligatoria<input id="foto" type="file" accept="image/*" capture="environment"></label><span id="fotoTexto">Tomar fotografía</span><button id="btnEnviar">GUARDAR REGISTRO</button></form><p id="mensaje" class="d-none" role="status"></p><p id="error" class="d-none" role="alert"></p></div><script>// Sustituye el contenido del bloque <script> de la app original.
+const WEB_APP_URL='https://script.google.com/macros/s/AKfycbwAK593DAUxExAdE6MX6BxpTuLb2zqx4I8yY43rEiBSzCvIMAIxXCpCPAMeIIi1eXeq6w/exec';
+const el=id=>document.getElementById(id);let tipoActual='vaciado_linea_1',enviando=false,pendiente=null;
+function cambiarTipo(tipo,btn){if(enviando||pendiente)return;tipoActual=tipo;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');el('bloqueKilos').style.display=tipo==='hidrocooler'?'none':'block';el('kilos').required=tipo!=='hidrocooler';}
+['ppm','orp','ph','kilos'].forEach(k=>el(k).required=true);el('ppm').min=0;el('ph').min=0;el('ph').max=14;el('kilos').min=0;
+el('foto').onchange=()=>el('fotoTexto').textContent=el('foto').files.length?'Fotografía seleccionada':'Tomar fotografía';
+function bloquear(on){document.querySelectorAll('#formControl input,.mode-btn').forEach(x=>x.disabled=on);}
+function leerFoto(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>no(Error('No se pudo leer la fotografía'));r.readAsDataURL(f);});}
+async function fotoComprimida(f){const src=await leerFoto(f),im=new Image();await new Promise((ok,no)=>{im.onload=ok;im.onerror=()=>no(Error('Fotografía no compatible. Usa JPEG o PNG'));im.src=src;});const scale=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.8);}
+function enviar(d){if(window.google&&google.script&&google.script.run)return new Promise((ok,no)=>google.script.run.withSuccessHandler(ok).withFailureHandler(no).guardarControl(d));return fetch(WEB_APP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d),signal:AbortSignal.timeout(90000)}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();});}
+el('formControl').onsubmit=async e=>{e.preventDefault();if(enviando)return;el('error').classList.add('d-none');el('mensaje').classList.add('d-none');if(!pendiente&&!el('foto').files[0]){el('error').textContent='Fotografía obligatoria';el('error').classList.remove('d-none');return;}enviando=true;bloquear(true);el('btnEnviar').disabled=true;
+ try{if(!pendiente){const d={origen:tipoActual,idRegistro:crypto.randomUUID(),correccion:el('correccion').checked};['exportadora','productor','lote','variedad','operador'].forEach(k=>d[k]=el(k).value.trim());['ppm','orp','ph'].forEach(k=>{if(el(k).value==='')throw Error('Falta '+k);d[k]=Number(el(k).value);});d.kilos=tipoActual==='hidrocooler'?null:el('kilos').value;d.foto=await fotoComprimida(el('foto').files[0]);pendiente=d;}
+ const r=await enviar(pendiente);if(r.resultado!=='ok'){pendiente=null;throw Error(r.mensaje||'Registro rechazado');}el('mensaje').textContent=(r.duplicado?'Registro ya guardado; no se duplicó.':'Registro guardado correctamente.')+(r.whatsapp?' WhatsApp: '+r.whatsapp:'');el('mensaje').classList.remove('d-none');pendiente=null;el('formControl').reset();el('fotoTexto').textContent='Tomar fotografía';
+ }catch(e){el('error').textContent=e.message+(pendiente?' No se pudo confirmar. Pulsa Reintentar sin recargar esta página: se usará el mismo ID.':'');el('error').classList.remove('d-none');}finally{enviando=false;bloquear(!!pendiente);el('btnEnviar').disabled=false;el('btnEnviar').textContent=pendiente?'REINTENTAR':'GUARDAR REGISTRO';}};
+
+// Menú integrado: no requiere instalar otro archivo.
+(function instalarMenu(){
+ const operador=!!document.getElementById('formControl');
+ const css=document.createElement('style');css.textContent=`
+ body{padding-top:76px!important}#nav-toggle{position:absolute;right:22px;top:18px;width:46px;height:44px;display:grid;place-items:center;background:#fff;color:#19384a;border:1px solid #cbd9df;border-radius:10px;z-index:10;cursor:pointer}#nav-toggle svg{width:23px;height:23px}#nav-panel{box-sizing:border-box;position:fixed;inset:0 0 0 auto;margin:0;height:100dvh;max-height:100dvh;width:min(500px,100%);max-width:100%;padding:24px;border:0;border-left:1px solid #dae5e9;border-radius:0;background:#f6f9fb;color:#19384a;font:15px system-ui;overflow:auto}#nav-panel::backdrop{background:#12304488}#nav-panel *{box-sizing:border-box}#nav-panel h2{font-size:22px;margin:0}#nav-panel h3{font-size:18px;margin:24px 0 8px}#nav-panel .nav-head{display:flex;align-items:center;justify-content:space-between;gap:10px}#nav-panel .nav-link{display:block;padding:14px;margin:18px 0;background:#198754;color:white;text-decoration:none;border-radius:10px;font-weight:650}#nav-panel a[aria-disabled=true]{opacity:.5;pointer-events:none}#nav-panel label{display:block;margin:10px 0;font-size:13px;font-weight:600}#nav-panel input,#nav-panel select{display:block;width:100%;margin-top:5px;padding:10px;border:1px solid #cbd9df;border-radius:8px;background:white;color:inherit;font:14px system-ui}#nav-panel button{padding:10px 14px;border:1px solid #cbd9df;border-radius:8px;font:14px system-ui;background:white;color:inherit;cursor:pointer}#nav-panel .nav-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}#nav-panel .nav-muted{font-size:13px;color:#617b8a;line-height:1.5}#nav-panel #nav-search{background:#198754;color:white}#nav-panel .nav-result{background:white;border:1px solid #dde7ec;border-radius:10px;padding:12px;margin:10px 0;overflow-wrap:anywhere}#nav-panel summary{cursor:pointer;line-height:1.6}#nav-panel dl{display:grid;grid-template-columns:90px 1fr;gap:7px;margin:12px 0;font-size:13px}#nav-panel dt{font-weight:650}#nav-panel dd{margin:0}#nav-panel button:disabled{opacity:.5}#nav-panel .nav-actions{display:flex;gap:8px;margin:15px 0}`;
+ document.head.appendChild(css);
+ const toggle=document.createElement('button');toggle.id='nav-toggle';toggle.type='button';toggle.setAttribute('aria-label','Abrir menú');toggle.setAttribute('aria-controls','nav-panel');toggle.setAttribute('aria-expanded','false');toggle.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';document.body.appendChild(toggle);
+ const panel=document.createElement('dialog');panel.id='nav-panel';panel.setAttribute('aria-labelledby','nav-title');
+ panel.innerHTML=`<div class="nav-head"><h2 id="nav-title">Menú</h2><button type="button" id="nav-close" aria-label="Cerrar menú">Cerrar ✕</button></div><a class="nav-link" id="nav-destino" target="_top" aria-disabled="true">${operador?'Ir al monitor':'Ir al registro del operador'}</a><p class="nav-muted" id="nav-link-status" role="status">Preparando enlace…</p><h3>Buscar controles</h3><p class="nav-muted">Busca en todo el historial. Puedes combinar campos o elegir una fecha.</p><form id="nav-form"><label>Buscar por palabra<input id="nav-texto" type="search" placeholder="Exportadora, lote, productor, variedad…" maxlength="200"></label><div class="nav-pair"><label>Exportadora<input id="nav-exportadora" maxlength="200"></label><label>Lote<input id="nav-lote" maxlength="200"></label><label>Productor<input id="nav-productor" maxlength="200"></label><label>Variedad<input id="nav-variedad" maxlength="200"></label></div><div class="nav-pair"><label>Fecha (opcional)<input id="nav-fecha" type="date"></label><label>Estanque<select id="nav-origen"><option value="">Todos</option><option value="vaciado_linea_1">Línea 1</option><option value="vaciado_linea_2">Línea 2</option><option value="hidrocooler">Hidrocooler</option></select></label></div><div class="nav-actions"><button id="nav-search" type="submit">Buscar</button><button id="nav-clear" type="button">Limpiar</button></div></form><p class="nav-muted" id="nav-status" role="status">Ingresa un criterio o pulsa Buscar para ver los últimos controles.</p><div id="nav-results"></div>`;
+ document.body.appendChild(panel);const n=id=>document.getElementById('nav-'+id);let version=0;
+ const escapar=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const hosted=!!(window.google&&google.script&&google.script.run);
+ toggle.onclick=()=>{panel.showModal();toggle.setAttribute('aria-expanded','true');};n('close').onclick=()=>panel.close();panel.addEventListener('close',()=>{toggle.setAttribute('aria-expanded','false');toggle.focus();});panel.addEventListener('click',e=>{if(e.target===panel&&e.clientX<panel.getBoundingClientRect().left)panel.close();});
+ function enlazar(base){try{const u=new URL(base);if(u.protocol!=='https:')throw Error();u.search='';u.searchParams.set('vista',operador?'monitor':'operador');n('destino').href=u.href;n('destino').removeAttribute('aria-disabled');n('link-status').textContent='';}catch(e){n('link-status').textContent='Configura la URL de implementación para activar el enlace.';}}
+ if(hosted)google.script.run.withSuccessHandler(enlazar).withFailureHandler(()=>n('link-status').textContent='No se pudo cargar el enlace. Vuelve a abrir esta página.').obtenerUrlApp();else enlazar(WEB_APP_URL);
+ n('destino').onclick=e=>{if(operador&&(enviando||pendiente)){e.preventDefault();n('link-status').textContent='Termina de confirmar el registro antes de cambiar de pantalla.';}else if(operador&&Array.from(document.querySelectorAll('#formControl input')).some(x=>x.type==='checkbox'?x.checked:x.value!=='')){if(!window.confirm('Hay datos sin guardar. ¿Quieres ir al monitor y descartarlos?'))e.preventDefault();}};
+ async function consulta(f){if(hosted)return new Promise((ok,no)=>google.script.run.withSuccessHandler(ok).withFailureHandler(no).buscarControles(f));const u=new URL(WEB_APP_URL);u.search='';u.searchParams.set('accion','buscarControles');Object.entries(f).forEach(([k,v])=>u.searchParams.set(k,v));const r=await fetch(u.href,{signal:AbortSignal.timeout(30000)});if(!r.ok)throw Error('HTTP '+r.status);return r.json();}
+ n('form').onsubmit=async e=>{e.preventDefault();const turno=++version;const f=Object.fromEntries(['texto','exportadora','lote','productor','variedad','fecha','origen'].map(k=>[k,n(k).value.trim()]));n('search').disabled=true;n('results').textContent='';n('status').textContent='Buscando controles…';try{const res=await consulta(f);if(turno!==version)return;if(!Array.isArray(res.registros))throw Error(res.mensaje||'Respuesta inválida');n('status').textContent=res.total?res.total+' coincidencias'+(res.total>res.limite?' · Se muestran las '+res.limite+' más recientes; precisa los filtros.':'.'):'No se encontraron controles con esos criterios.';
+ n('results').innerHTML=res.registros.map(r=>{let foto='';try{const u=new URL(r.foto);if(u.protocol==='https:'&&u.hostname==='drive.google.com')foto='<a href="'+escapar(u.href)+'" target="_blank" rel="noopener">Ver fotografía</a>';}catch(e){}const campos={Exportadora:r.exportadora,Productor:r.productor,Lote:r.lote,Variedad:r.variedad,Operador:r.operador,PPM:r.ppm,ORP:r.orp,pH:r.ph,Kilos:r.kilos,Corrección:r.correccion};return '<details class="nav-result"><summary><b>'+escapar(r.estanque)+'</b> · '+escapar(r.dia)+' '+escapar(r.hora)+'<br>Lote '+escapar(r.lote)+' · '+escapar(r.productor)+'</summary><dl>'+Object.entries(campos).map(([k,v])=>'<dt>'+k+'</dt><dd>'+escapar(v===''?'—':v)+'</dd>').join('')+'</dl>'+foto+'</details>';}).join('');
+ }catch(err){if(turno===version)n('status').textContent='No se pudo buscar: '+err.message;}finally{if(turno===version)n('search').disabled=false;}};
+ n('clear').onclick=()=>{version++;n('form').reset();n('results').textContent='';n('status').textContent='Filtros limpiados. Pulsa Buscar para ver los últimos controles.';n('search').disabled=false;};
+})();
+
+</script></html>
