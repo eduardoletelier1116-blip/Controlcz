@@ -29,7 +29,7 @@ const Acceso=(()=>{
  return {call,instalar,comprobar,get perfil(){return perfil;}};
 })();
 
-const WEB_APP_URL='https://script.google.com/macros/s/AKfycbwrCCj37lEnV5UiOkV0ZQuZ0phjVNIf_UNjgQH6JEnKenLaIzuWZWvIiugvCfyOY0U-FA/exec';
+const WEB_APP_URL='https://script.google.com/macros/s/AKfycbyBBJdpux4oKrsBNZ96TG-LX80H_0t7D8vWtkiQMdVItsU6rYpHKlIFkeuZyKNmTB8T8A/exec';
 const $=id=>document.getElementById(id);const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let model=null,seguir=true,seq=0;const keys=['ppm','orp','ph'];const valido=v=>typeof v==='number'&&Number.isFinite(v);
 function hoy(){const p=Object.fromEntries(new Intl.DateTimeFormat('en',{timeZone:'America/Santiago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day;}
