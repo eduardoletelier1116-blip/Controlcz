@@ -22,7 +22,7 @@
     <span class="estado-si">Sí</span>
   </span>
 </label><label>Fotografía obligatoria<input id="foto" type="file" accept="image/*" capture="environment"></label><span id="fotoTexto">Tomar fotografía</span><button id="btnEnviar">GUARDAR REGISTRO</button></form><p id="mensaje" class="d-none" role="status"></p><p id="error" class="d-none" role="alert"></p></div><script>// Sustituye el contenido del bloque <script> de la app original.
-const WEB_APP_URL='https://script.google.com/macros/s/AKfycbwrCCj37lEnV5UiOkV0ZQuZ0phjVNIf_UNjgQH6JEnKenLaIzuWZWvIiugvCfyOY0U-FA/exec';
+const WEB_APP_URL='https://script.google.com/macros/s/AKfycbxjhfipyQv6LEudvVyo1CmGvxIoNCmYWV3XCIj5Ia3izI8AleeZfCmEezHLLFH-CXDmyQ/exec';
 const el=id=>document.getElementById(id);let tipoActual='vaciado_linea_1',enviando=false,pendiente=null;
 function cambiarTipo(tipo,btn){if(enviando||pendiente)return;tipoActual=tipo;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');el('bloqueKilos').style.display=tipo==='hidrocooler'?'none':'block';el('kilos').required=tipo!=='hidrocooler';}
 ['ppm','orp','ph','kilos'].forEach(k=>el(k).required=true);el('ppm').min=0;el('ph').min=0;el('ph').max=14;el('kilos').min=0;
