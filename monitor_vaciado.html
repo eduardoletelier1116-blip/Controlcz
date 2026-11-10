@@ -63,7 +63,15 @@ $('rows').onclick=e=>{const b=e.target.closest('[data-index]');if(!b)return;cons
  const hosted=!!(window.google&&google.script&&google.script.run);
  toggle.onclick=()=>{panel.showModal();toggle.setAttribute('aria-expanded','true');};n('close').onclick=()=>panel.close();panel.addEventListener('close',()=>{toggle.setAttribute('aria-expanded','false');toggle.focus();});panel.addEventListener('click',e=>{if(e.target===panel&&e.clientX<panel.getBoundingClientRect().left)panel.close();});
  function enlazar(base){try{const u=new URL(base);if(u.protocol!=='https:')throw Error();u.search='';u.searchParams.set('vista',operador?'monitor':'operador');n('destino').href=u.href;n('destino').removeAttribute('aria-disabled');n('link-status').textContent='';}catch(e){n('link-status').textContent='Configura la URL de implementación para activar el enlace.';}}
- if(hosted)google.script.run.withSuccessHandler(enlazar).withFailureHandler(()=>n('link-status').textContent='No se pudo cargar el enlace. Vuelve a abrir esta página.').obtenerUrlApp();else enlazar(WEB_APP_URL);
+ const paginaDestino = operador
+  ? 'monitor_vaciado.html'
+  : 'vaciado_app.html';
+
+n('destino').href =
+  'https://eduardoletelier1116-blip.github.io/Controlcz/' + paginaDestino;
+
+n('destino').removeAttribute('aria-disabled');
+n('link-status').textContent = '';
  n('destino').onclick=e=>{if(operador&&(enviando||pendiente)){e.preventDefault();n('link-status').textContent='Termina de confirmar el registro antes de cambiar de pantalla.';}else if(operador&&Array.from(document.querySelectorAll('#formControl input')).some(x=>x.type==='checkbox'?x.checked:x.value!=='')){if(!window.confirm('Hay datos sin guardar. ¿Quieres ir al monitor y descartarlos?'))e.preventDefault();}};
  async function consulta(f){return Acceso.call('buscarV3',f);}
  n('form').onsubmit=async e=>{e.preventDefault();const turno=++version;const f=window.filtrosBuscadorV3();n('search').disabled=true;n('results').textContent='';n('status').textContent='Buscando controles…';try{const res=await consulta(f);if(turno!==version)return;if(!Array.isArray(res.registros))throw Error(res.mensaje||'Respuesta inválida');n('status').textContent=res.total?res.total+' coincidencias'+(res.total>res.limite?' · Se muestran las '+res.limite+' más recientes; precisa los filtros.':'.'):'No se encontraron controles con esos criterios.';
