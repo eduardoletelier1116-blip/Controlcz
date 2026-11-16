@@ -591,3 +591,24 @@ function excelControles(registros){
 })();
 
 </script>
+
+<script>
+(function(){
+ if(document.getElementById('rangos-menu'))return;
+ const panel=document.getElementById('nav-panel');if(!panel)return;
+ const btn=document.createElement('button');btn.id='rangos-menu';btn.type='button';btn.textContent='Rangos';btn.dataset.admin='';btn.hidden=true;btn.style.cssText='display:block;width:100%;margin:12px 0';panel.append(btn);
+ const dlg=document.createElement('dialog');dlg.style.cssText='width:min(520px,92vw);max-height:90vh;overflow:auto;border:0;border-radius:16px;padding:24px;color:#19384a;font:15px system-ui';
+ dlg.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><h2>Rangos de control</h2><button type="button" id="rg-close">Cerrar</button></div><p>Estos límites se aplican a Línea 1, Línea 2 e Hidrocooler.</p><form id="rg-form">'+['ppm','orp','ph'].map(k=>'<fieldset style="margin:12px 0;border:1px solid #d5e1e7;border-radius:8px"><legend>'+({ppm:'PPM',orp:'ORP',ph:'pH'}[k])+'</legend><div style="display:flex;gap:12px">'+['min','max'].map(c=>'<label style="flex:1">'+(c==='min'?'Mínimo':'Máximo')+'<input id="rg-'+k+'-'+c+'" type="number" step="any" required style="display:block;box-sizing:border-box;width:100%;padding:10px;margin:6px 0"'+(k==='ph'?' min="0" max="14"':k==='ppm'?' min="0"':'')+'></label>').join('')+'</div></fieldset>').join('')+'<label>Motivo del cambio<textarea id="rg-motivo" required minlength="5" maxlength="500" style="display:block;box-sizing:border-box;width:100%;padding:10px;margin-top:6px"></textarea></label><p style="font-size:13px">El monitor y los nuevos PDF evaluarán también los controles anteriores con estos límites. Las mediciones guardadas no se modifican. No se reenvían alertas antiguas.</p><button type="submit" id="rg-save" style="background:#198754;color:white;padding:12px;border:0;border-radius:8px">Guardar rangos</button></form><p id="rg-status" role="status"></p>';
+ document.body.append(dlg);const el=k=>document.getElementById('rg-'+k);let version=0,busy=false;
+ const permiso=()=>{btn.hidden=!(Acceso.perfil?.rol==='ADMIN'&&Acceso.perfil?.estado==='ACTIVO');if(btn.hidden)dlg.close();};document.addEventListener('sesion-lista',permiso);permiso();
+ el('close').onclick=()=>{if(!busy)dlg.close();};dlg.addEventListener('cancel',e=>{if(busy)e.preventDefault();});
+ btn.onclick=async()=>{if(busy)return;panel.close();dlg.showModal();el('form').hidden=true;el('status').textContent='Cargando rangos…';try{const d=await Acceso.call('rangosLeer');version=d.version;['ppm','orp','ph'].forEach(k=>['min','max'].forEach(c=>el(k+'-'+c).value=d.rangos[k][c]));el('motivo').value='';el('form').hidden=false;el('status').textContent=d.autor?'Último cambio: '+d.autor:'Rangos iniciales';}catch(e){el('status').textContent=e.message;}};
+ el('form').onsubmit=async e=>{e.preventDefault();if(busy)return;const rangos=Object.fromEntries(['ppm','orp','ph'].map(k=>[k,Object.fromEntries(['min','max'].map(c=>[c,Number(el(k+'-'+c).value)]))]));if(Object.values(rangos).some(r=>!Number.isFinite(r.min)||!Number.isFinite(r.max)||r.min>=r.max)){el('status').textContent='Revisa los valores: el mínimo debe ser menor que el máximo.';return;}
+ const motivo=el('motivo').value.trim();if(motivo.length<5){el('status').textContent='Escribe un motivo de al menos 5 caracteres.';return;}
+ busy=true;dlg.querySelectorAll('input,textarea,button').forEach(x=>x.disabled=true);el('status').textContent='Guardando…';try{const d=await Acceso.call('rangosGuardar',{rangos,version,motivo});version=d.version;el('status').textContent='Rangos guardados. El monitor se actualizará y los próximos reportes usarán estos valores.';
+ if(typeof refresh==='function')refresh();
+ ['rp-download','rp-open','rp-preview'].forEach(id=>{const x=document.getElementById(id);if(x)x.hidden=true;});const status=document.getElementById('rp-status');if(status)status.textContent='Los rangos cambiaron. Genera nuevamente la vista previa del PDF.';
+ }catch(err){el('status').textContent=err.message;}finally{busy=false;dlg.querySelectorAll('input,textarea,button').forEach(x=>x.disabled=false);}};
+})();
+</script>
+
