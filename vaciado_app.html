@@ -48,7 +48,7 @@ const Acceso=(()=>{
  return {call,instalar,comprobar,get perfil(){return perfil;}};
 })();
 
-const WEB_APP_URL='https://script.google.com/macros/s/AKfycbyETfZTvGV0hsOfJZ8sFxCxH4frfWBrA8xT4_ozBCsKg8mpW3XY_7AzgPa16IMoM4NQAw/exec';
+const WEB_APP_URL='https://script.google.com/macros/s/AKfycbyriSfPrY_SBWXD2qeLtTybP384y6q7pMfy49wFkZk9gY3CfJ4DpxzRh8caUS-C9fNR_w/exec';
 const el=id=>document.getElementById(id);let tipoActual='vaciado_linea_1',enviando=false,pendiente=null;
 function cambiarTipo(tipo,btn){if(enviando||pendiente)return;tipoActual=tipo;document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));btn.classList.add('active');el('bloqueKilos').style.display=tipo==='hidrocooler'?'none':'block';el('kilos').required=tipo!=='hidrocooler';}
 ['ppm','orp','ph','kilos'].forEach(k=>el(k).required=true);el('ppm').min=0;el('ph').min=0;el('ph').max=14;el('kilos').min=0;
